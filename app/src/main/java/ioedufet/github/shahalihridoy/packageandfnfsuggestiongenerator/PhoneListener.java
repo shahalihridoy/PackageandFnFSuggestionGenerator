@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Telephony;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -24,11 +25,11 @@ public class PhoneListener extends BroadcastReceiver {
             // Ringing state
             // This code will execute when the phone has an incoming call
         } else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
-                TelephonyManager.EXTRA_STATE_IDLE)
-                || intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
                 TelephonyManager.EXTRA_STATE_OFFHOOK)) {
             System.out.println(intent.getAction());
             System.out.println("call rejected "+intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER));
+//            History h = new History(new Handler());
+
             // This code will execute when the call is answered or disconnected
         }
     }
