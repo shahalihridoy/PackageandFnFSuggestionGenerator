@@ -49,11 +49,11 @@ public class History extends ContentObserver {
 
         String phNumber = cursor.getString(number);
         String phDuration = cursor.getString(duration);
-        if(phDuration.equals("0") || phNumber.length()<11){
-            return;
-        }
-        else if(phNumber.charAt(0) == '+')
-            phNumber = phNumber.substring(3, phNumber.length());
+//        if(phDuration.equals("0") || phNumber.length()<11){
+//            return;
+//        }
+//        else if(phNumber.charAt(0) == '+')
+//            phNumber = phNumber.substring(3, phNumber.length());
         Database db = new Database(context, "CallLog", null, 13795);
         db.insertdata(cursor.getString(number),cursor.getString(duration));
     }
