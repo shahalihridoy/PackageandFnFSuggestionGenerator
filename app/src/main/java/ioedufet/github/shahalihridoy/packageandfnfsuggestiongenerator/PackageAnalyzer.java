@@ -52,7 +52,7 @@ public class PackageAnalyzer {
         }
 
 //        cost = cost + cost*.21; //with 21% vat
-        Toast.makeText(context, "bondhu = " + Double.toString(cost), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "bondhu = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
         return 0;
     }
 
@@ -71,7 +71,7 @@ public class PackageAnalyzer {
             }
             while (c.moveToNext());
         }
-        Toast.makeText(context,"smile = "+Double.toString(cost),Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"smile = "+Double.toString(cost),Toast.LENGTH_SHORT).show();
         return 0;
 }
 
@@ -84,7 +84,7 @@ public class PackageAnalyzer {
             }
             while (c.moveToNext());
         }
-        Toast.makeText(context, "nishchinto = " + Double.toString(cost), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "nishchinto = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
         return 0;
     }
 
@@ -107,7 +107,7 @@ public class PackageAnalyzer {
             }
             while (c.moveToNext());
 
-            Toast.makeText(context, "djuice = " + Double.toString(cost), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "djuice = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
         }
         return 0;
     }

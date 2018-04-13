@@ -8,13 +8,14 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="26" />
 
-    <!--Taking permission to access in call logs-->
+    <!-- Taking permission to access in call logs -->
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,13 +32,17 @@
             </intent-filter>
         </activity>
 
-        <!--as phone state reading is an action, it is inserted inside application-->
+        <!-- as phone state reading is an action, it is inserted inside application -->
         <receiver android:name=".PhoneListener">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".CallListener"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

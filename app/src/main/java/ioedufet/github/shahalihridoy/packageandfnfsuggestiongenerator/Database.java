@@ -17,7 +17,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table if not exists call_history(number varchar, duration varchar, type varchar)");
+        db.execSQL("create table if not exists call_history(number varchar, duration varchar)");
     }
 
     @Override
@@ -26,17 +26,17 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertdata(String number, String duration, String type)
+    public boolean insertdata(String number, String duration)
     {
         SQLiteDatabase sdb=this.getWritableDatabase();
-        sdb.execSQL("insert into call_history values('"+number+"','"+duration+"','"+type+"')");
+        sdb.execSQL("insert into call_history values('"+number+"','"+duration+"')");
         return true;
     }
 
     public Cursor getData()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("select number,sum(duration),type from call_history group by number order by sum(duration) DESC", null);
+        Cursor c = db.rawQuery("select number,sum(duration) from call_history group by number order by sum(duration) DESC", null);
         return c;
     }
     public void deleteTable()

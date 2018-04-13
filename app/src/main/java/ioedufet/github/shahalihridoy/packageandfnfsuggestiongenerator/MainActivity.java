@@ -49,12 +49,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//      testing....
-        History h = new History(new Handler(),this);
-        getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI,true,h);
-//        testing ends here
-
-
 //        showing loading sign on create
         builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.progress);
@@ -172,7 +166,7 @@ public class MainActivity extends Activity {
             String callDate = managedCursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
             String callDuration = managedCursor.getString(duration);
-            if (callDuration.equals("0"))
+            if (callDuration.equals("0") || phNumber.length()<11)
                 continue;
             try{
                 if (phNumber.charAt(0) == '+')
@@ -198,7 +192,7 @@ public class MainActivity extends Activity {
             }
 
 //            inserting in database
-            db.insertdata(phNumber, callDuration, dir);
+            db.insertdata(phNumber, callDuration);
         }
         managedCursor.close();
 
@@ -212,7 +206,7 @@ public class MainActivity extends Activity {
         if (c.moveToFirst()) {
             do {
 //                appending data to string buffer
-                sb.append("\nPhone Number:--- " + c.getString(0) + " \nCall Type:--- " + c.getString(2) + " \nCall duration in sec :--- " + c.getString(1));
+                sb.append("\nPhone Number:--- " + c.getString(0)+" \nCall duration in sec :--- " + c.getString(1));
                 sb.append("\n----------------------------------");
             }
             while (c.moveToNext());
@@ -228,6 +222,10 @@ public class MainActivity extends Activity {
         dialog.dismiss();
     }
 
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//    }
 }
 
 
