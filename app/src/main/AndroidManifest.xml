@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,6 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--this is the main activity-->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,14 +34,14 @@
         </activity>
 
         <!-- as phone state reading is an action, it is inserted inside application -->
-        <receiver android:name=".PhoneListener">
+        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.PhoneListener">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
         <!--when the phone is booted then this will run the service-->
-        <receiver android:name=".AutoStartService">
+        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.AutoStartService">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -50,8 +51,7 @@
         <service
             android:name=".CallListenerService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true"></service>
     </application>
 
 </manifest>
