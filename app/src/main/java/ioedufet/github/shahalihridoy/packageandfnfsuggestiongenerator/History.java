@@ -58,5 +58,6 @@ public class History extends ContentObserver {
         System.out.println(phDuration);
         Database db = new Database(context, "CallLog", null, 13795);
         db.insertdata(cursor.getString(number),cursor.getString(duration));
+        db.close();
     }
 }

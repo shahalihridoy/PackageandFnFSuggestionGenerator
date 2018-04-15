@@ -12,8 +12,6 @@
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -49,9 +47,20 @@
 
         <!--this service will run in background even if the app is closed-->
         <service
-            android:name=".CallListenerService"
+            android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.CallListenerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+
+        <service android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceWaker"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceMarshmallow"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
     </application>
 
 </manifest>

@@ -4,10 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -49,8 +53,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        starting the service
-        startService(new Intent(this, CallListenerService.class));
+//        service for Nougat or onward version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
+            backgroundServiceMarshmallow.startBackgroundService();
+        } else
+            startService(new Intent(this, CallListenerService.class));
+
 
 //        creating database
         db = new Database(getApplicationContext(), "CallLog", null, 13795);
@@ -58,8 +67,8 @@ public class MainActivity extends Activity {
         textView.setText("No call log found");
 
 //        get required data
-        if(checkPermission())
-        getData();
+        if (checkPermission())
+            getData();
     }
 
 
@@ -101,7 +110,7 @@ public class MainActivity extends Activity {
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALL_LOG)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
-                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
                                 ) {
                             showDialogOK("Permission is required for this app",
                                     new DialogInterface.OnClickListener() {
@@ -121,8 +130,9 @@ public class MainActivity extends Activity {
                         //permission is denied (and never ask again is  checked)
                         //shouldShowRequestPermissionRationale will return false
                         else {
-                            Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
-                                    .show();
+                            getData();
+//                            Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
+//                                    .show();
                         }
                     }
                 }
@@ -145,6 +155,7 @@ public class MainActivity extends Activity {
         builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(R.layout.progress);
         dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.show();
 
         final Handler handler = new Handler() {
