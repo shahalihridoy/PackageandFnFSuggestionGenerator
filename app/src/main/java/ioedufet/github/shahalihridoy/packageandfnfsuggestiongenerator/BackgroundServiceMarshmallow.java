@@ -3,6 +3,9 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -12,11 +15,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Build;
 import android.os.PersistableBundle;
 import android.provider.CallLog;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,8 +43,21 @@ public class BackgroundServiceMarshmallow extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
 
-        insertData();
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
+                .setContentTitle("My Title")
+                .setContentText("my content text")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(PendingIntent.getActivity(this,
+                        0,
+                        new Intent(this,MainActivity.class)
+                        ,PendingIntent.FLAG_UPDATE_CURRENT))
+                .setAutoCancel(true);
+        NotificationManager nfm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nfm.notify(324,notification.build());
 
+
+        insertData();
+        Log.d(TAG, "onStartJob: "+this);
         jobFinished(jobParameters, true);
         return true;
     }
@@ -92,7 +110,7 @@ public class BackgroundServiceMarshmallow extends JobService {
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         int resultCode = scheduler.schedule(info);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d(TAG, "Job scheduled");
+            Log.d(TAG, "Job scheduled in marshmallow");
         } else {
             Log.d(TAG, "Job scheduling failed");
         }

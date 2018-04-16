@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 /**
@@ -110,5 +111,10 @@ public class PackageAnalyzer {
             Toast.makeText(context, "djuice = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
         }
         return 0;
+    }
+
+    public String getOperator(){
+        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return manager.getNetworkOperatorName();
     }
 }

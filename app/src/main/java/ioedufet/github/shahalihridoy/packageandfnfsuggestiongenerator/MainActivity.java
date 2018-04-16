@@ -4,9 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.backup.BackupAgent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -55,22 +57,29 @@ public class MainActivity extends Activity {
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
-            backgroundServiceMarshmallow.startBackgroundService();
+
+            BackgroundServiceWaker backgroundServiceWaker = new BackgroundServiceWaker(this);
+            backgroundServiceWaker.startBackgroundService();
+
+//            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
+//            backgroundServiceMarshmallow.startBackgroundService();
+
         } else
             startService(new Intent(this, CallListenerService.class));
-
 
 //        creating database
         db = new Database(getApplicationContext(), "CallLog", null, 13795);
         textView = (TextView) findViewById(R.id.textview_call);
-        textView.setText("No call log found");
+//        textView.setText("No call log found");
 
 //        get required data
         if (checkPermission())
             getData();
-    }
 
+//        get Operator name
+        textView.append("\n"+pkg.getOperator()+"\n----------------------------------");
+
+    }
 
     private boolean checkPermission() {
 
@@ -106,7 +115,7 @@ public class MainActivity extends Activity {
                     if (perms.get(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.RECEIVE_BOOT_COMPLETED) == PackageManager.PERMISSION_GRANTED) {
-                        getData();
+//                        getData();
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALL_LOG)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
@@ -176,4 +185,5 @@ public class MainActivity extends Activity {
         }.start();
 
     }
+
 }

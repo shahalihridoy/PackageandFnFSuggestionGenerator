@@ -66,7 +66,6 @@ public class DataLoader extends Activity {
             db.close();
         }
         cursor.close();
-        db.close();
     }
 
     public void getCallDetailsFromDatabase(TextView textView) {
@@ -81,8 +80,9 @@ public class DataLoader extends Activity {
                 sb.append("\n----------------------------------");
             } while (cursor.moveToNext());
         }
+        db.close();
         cursor.close();
-        textView.setText(sb);
+        textView.append(sb);
     }
 
 }

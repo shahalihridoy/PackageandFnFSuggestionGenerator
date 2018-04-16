@@ -1,25 +1,168 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--<ProgressBar-->
-        <!--android:id="@+id/loader"-->
-        <!--style="?android:attr/progressBarStyle"-->
-        <!--android:layout_width="150dp"-->
-        <!--android:layout_height="150dp"-->
-        <!--android:layout_centerInParent="true" />-->
+    <!--  1st card for package-->
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:rowCount="1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/circle_shape"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="Package Name"
+                    android:textAlignment="center"
+                    android:textSize="25sp"
+                    android:textColor="@color/cardview_light_background"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Call Rate"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:background="@color/cardview_shadow_start_color"
+                    android:textSize="25sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    android:text="S-FnF: 5.5 p/10s\nFnF: 11.5 p/10s\nOther: 27 p/10s"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+        </GridLayout>
+    </android.support.v7.widget.CardView>
+
+    <!-- super fnf -->
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_shadow_start_color"
+                android:gravity="center_horizontal"
+                android:text="Super FnF"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="left"
+                android:text="01992057252"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="01992057252"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <!-- Normal fnf-->
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_shadow_start_color"
+                android:gravity="center_horizontal"
+                android:text="General FnF"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="left"
+                android:text="01992057252"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="01992057252"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:textAlignment="center">
 
         <TextView
             android:id="@+id/textview_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:text="No Call Logs Found" />
+
     </ScrollView>
-</RelativeLayout>
+
+</LinearLayout>
