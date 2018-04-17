@@ -23,6 +23,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +37,6 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity {
-    TextView textView;
     Database db;
     Cursor c;
     AlertDialog.Builder builder;
@@ -69,15 +70,11 @@ public class MainActivity extends Activity {
 
 //        creating database
         db = new Database(getApplicationContext(), "CallLog", null, 13795);
-        textView = (TextView) findViewById(R.id.textview_call);
-//        textView.setText("No call log found");
 
 //        get required data
-        if (checkPermission())
+        if (checkPermission()){
             getData();
-
-//        get Operator name
-        textView.append("\n"+pkg.getOperator()+"\n----------------------------------");
+        }
 
     }
 
@@ -115,7 +112,7 @@ public class MainActivity extends Activity {
                     if (perms.get(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.RECEIVE_BOOT_COMPLETED) == PackageManager.PERMISSION_GRANTED) {
-//                        getData();
+                        getData();
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALL_LOG)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
@@ -158,7 +155,17 @@ public class MainActivity extends Activity {
                 .show();
     }
 
+
+
+    TextView packageName;
+    TextView superfnf;
+    ListView fnfList;
+    ArrayAdapter<String> adapter;
     private void getData() {
+        packageName = (TextView) findViewById(R.id.package_name);
+        superfnf= (TextView) findViewById(R.id.super_fnf);
+        fnfList = (ListView) findViewById(R.id.fnf_list);
+        adapter = new ArrayAdapter<String>(this,0);
 
         //        showing loading loaderHandler on create
         builder = new AlertDialog.Builder(MainActivity.this);
@@ -167,10 +174,14 @@ public class MainActivity extends Activity {
         dialog.setCancelable(false);
         dialog.show();
 
-        final Handler handler = new Handler() {
+        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                dataLoader.getCallDetailsFromDatabase(textView);
+                PackageAnalyzer.Helper helper= pkg.analyzeGP();
+                packageName.setText(helper.packageName);
+                superfnf.setText(helper.superFnf);
+                adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+                fnfList.setAdapter(adapter);
                 dialog.dismiss();
             }
         };

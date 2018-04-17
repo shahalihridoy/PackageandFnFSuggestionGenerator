@@ -36,8 +36,9 @@ public class BackgroundServiceWaker extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
 
+        Log.d(TAG, "onStartJob: insied waker");
         new BackgroundServiceWaker(this).startBackgroundService();
-        jobFinished(jobParameters, false);
+        jobFinished(jobParameters, true);
         return true;
     }
 
@@ -52,7 +53,7 @@ public class BackgroundServiceWaker extends JobService {
         ComponentName componentName = new ComponentName(context, BackgroundServiceWaker.class);
         @SuppressLint({"NewApi", "LocalSuppress"}) JobInfo info = new JobInfo.Builder(124, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setOverrideDeadline(600)
+                .setPeriodic(60)
                 .setPersisted(true)
                 .build();
 
