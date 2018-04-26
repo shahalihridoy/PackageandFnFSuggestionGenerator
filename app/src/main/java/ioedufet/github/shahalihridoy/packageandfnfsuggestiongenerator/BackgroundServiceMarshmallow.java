@@ -55,7 +55,6 @@ public class BackgroundServiceMarshmallow extends JobService {
         NotificationManager nfm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nfm.notify(324,notification.build());
 
-
         insertData();
         Log.d(TAG, "onStartJob: "+this);
         jobFinished(jobParameters, true);

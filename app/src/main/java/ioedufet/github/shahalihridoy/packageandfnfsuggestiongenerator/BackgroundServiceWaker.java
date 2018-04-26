@@ -37,32 +37,12 @@ public class BackgroundServiceWaker extends JobService {
     public boolean onStartJob(JobParameters jobParameters) {
 
         Log.d(TAG, "onStartJob: insied waker");
-        new BackgroundServiceWaker(this).startBackgroundService();
         jobFinished(jobParameters, true);
-        return true;
+        return false;
     }
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        return true;
-    }
-
-    //    this function will start the service for nougat or onward version
-    public void startBackgroundService(){
-
-        ComponentName componentName = new ComponentName(context, BackgroundServiceWaker.class);
-        @SuppressLint({"NewApi", "LocalSuppress"}) JobInfo info = new JobInfo.Builder(124, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(60)
-                .setPersisted(true)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(info);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d(TAG, "Job scheduled in waker");
-        } else {
-            Log.d(TAG, "Job scheduling failed");
-        }
+        return false;
     }
 }

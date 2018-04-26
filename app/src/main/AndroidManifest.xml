@@ -39,7 +39,7 @@
         </receiver>
 
         <!--when the phone is booted then this will run the service-->
-        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.AutoStartService">
+        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.ServiceWaker">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -50,11 +50,6 @@
             android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.CallListenerService"
             android:enabled="true"
             android:exported="true"/>
-
-        <service android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceWaker"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
         <service android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceMarshmallow"
             android:enabled="true"

@@ -47,13 +47,15 @@ public class History extends ContentObserver {
         int number = cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER);
         int duration = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
 
+        String phType = cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE));
         String phNumber = cursor.getString(number);
         String phDuration = cursor.getString(duration);
-//        if(phDuration.equals("0") || phNumber.length()<11){
-//            return;
-//        }
-//        else if(phNumber.charAt(0) == '+')
-//            phNumber = phNumber.substring(3, phNumber.length());
+        if(phDuration.equals("0") || phType.charAt(0)== '2' || phNumber.length()<11){
+            return;
+        }
+        else if(phNumber.charAt(0) == '+')
+            phNumber = phNumber.substring(3, phNumber.length());
+
         System.out.println(phNumber);
         System.out.println(phDuration);
         Database db = new Database(context, "CallLog", null, 13795);

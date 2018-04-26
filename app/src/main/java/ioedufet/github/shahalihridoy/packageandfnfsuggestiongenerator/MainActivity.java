@@ -57,13 +57,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 //        service for Nougat or onward version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-            BackgroundServiceWaker backgroundServiceWaker = new BackgroundServiceWaker(this);
-            backgroundServiceWaker.startBackgroundService();
-
-//            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
-//            backgroundServiceMarshmallow.startBackgroundService();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
+            backgroundServiceMarshmallow.startBackgroundService();
 
         } else
             startService(new Intent(this, CallListenerService.class));
@@ -196,5 +192,4 @@ public class MainActivity extends Activity {
         }.start();
 
     }
-
 }
