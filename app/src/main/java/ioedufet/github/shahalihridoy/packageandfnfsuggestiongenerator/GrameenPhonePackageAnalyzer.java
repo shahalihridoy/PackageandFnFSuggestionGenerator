@@ -1,17 +1,9 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Handler;
-import android.telephony.TelephonyManager;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Md Shah Ali on 31-Mar-18.
@@ -33,7 +25,7 @@ public class GrameenPhonePackageAnalyzer {
 
     //    analyze overall grameenPhone
     public Helper analyzeGP(){
-        c = db.getData();
+        c = db.getDataForGP();
         Helper smile = smile();
         Helper bondhu = bondhu();
         Helper nishchinto = nishchinto();

@@ -39,27 +39,37 @@ public class History extends ContentObserver {
     public void onChange(boolean selfChange, Uri uri) {
         super.onChange(selfChange, uri);
         System.out.println("content is changed");
+
         if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE+" DESC");
         cursor.moveToNext();
+
         int number = cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER);
         int duration = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
 
         String phType = cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE));
         String phNumber = cursor.getString(number);
         String phDuration = cursor.getString(duration);
+
+        String dateStrig = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE));
+        Date date = new Date(Long.valueOf(dateStrig));
+        String callTime = new SimpleDateFormat("HH:mm").format(date);
+
+        System.out.println(phNumber);
+        System.out.println(phDuration);
+        System.out.println(callTime);
+
         if(phDuration.equals("0") || phType.charAt(0)== '2' || phNumber.length()<11){
             return;
         }
         else if(phNumber.charAt(0) == '+')
             phNumber = phNumber.substring(3, phNumber.length());
 
-        System.out.println(phNumber);
-        System.out.println(phDuration);
         Database db = new Database(context, "CallLog", null, 13795);
-        db.insertdata(cursor.getString(number),cursor.getString(duration));
+        db.insertdata(cursor.getString(number),cursor.getString(duration),callTime);
         db.close();
     }
 }

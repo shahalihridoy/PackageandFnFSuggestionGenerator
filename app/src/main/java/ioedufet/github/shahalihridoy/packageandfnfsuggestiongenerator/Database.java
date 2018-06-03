@@ -17,7 +17,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table if not exists call_history(number varchar, duration varchar)");
+        db.execSQL("create table if not exists call_history(number varchar, duration varchar, callTime varchar)");
     }
 
     @Override
@@ -26,17 +26,22 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertdata(String number, String duration)
+    public boolean insertdata(String number, String duration, String time)
     {
         SQLiteDatabase sdb=this.getWritableDatabase();
-        sdb.execSQL("insert into call_history values('"+number+"','"+duration+"')");
+        sdb.execSQL("insert into call_history values('"+number+"','"+duration+"','"+time+"')");
         return true;
     }
 
-    public Cursor getData()
+    public Cursor getDataForGP()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("select number,sum(cast(round(duration/10)+0.5 as int)) from call_history group by number order by sum(duration) DESC", null);
+        Cursor c = db.rawQuery("select number,sum(cast(round(duration/10)+0.5 as int)),callTime from call_history group by number order by sum(cast(round(duration/10)+0.5 as int)) DESC", null);
+        return c;
+    }
+    public Cursor getDataForRobi(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("select number,sum(duration),callTime from call_history group by number order by sum(duration) DESC", null);
         return c;
     }
     public void deleteTable()

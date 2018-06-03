@@ -25,6 +25,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static android.content.ContentValues.TAG;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -82,6 +85,8 @@ public class BackgroundServiceMarshmallow extends JobService {
         String phNumber = cursor.getString(number);
         String phDuration = cursor.getString(duration);
         String phType = cursor.getString(type);
+        Date callDayTime = new Date(Long.valueOf(cursor.getString(cursor.getColumnIndex(CallLog.Calls.DATE))));
+        String callTime = new SimpleDateFormat("HH:mm").format(callDayTime);
 
         if(phDuration.equals("0") || phType.charAt(0)== '2' || phNumber.length()<11){
             return;
@@ -93,7 +98,7 @@ public class BackgroundServiceMarshmallow extends JobService {
         System.out.println(phDuration);
 
         Database db = new Database(getApplicationContext(), "CallLog", null, 13795);
-        db.insertdata(cursor.getString(number),cursor.getString(duration));
+        db.insertdata(cursor.getString(number),cursor.getString(duration),callTime);
         db.close();
     }
 

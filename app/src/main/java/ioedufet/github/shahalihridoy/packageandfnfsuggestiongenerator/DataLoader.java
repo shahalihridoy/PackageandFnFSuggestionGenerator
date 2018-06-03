@@ -1,22 +1,11 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.CallLog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.view.menu.ActionMenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,7 +26,7 @@ public class DataLoader extends Activity {
 
         db = new Database(context, "CallLog", null, 13795);
         cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        if(db.getData().getCount() != 0)
+        if(db.getDataForGP().getCount() != 0)
             return;
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
         int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
@@ -48,7 +37,9 @@ public class DataLoader extends Activity {
             String phNumber = cursor.getString(number);
             String callType = cursor.getString(type);
             String callDate = cursor.getString(date);
+
             Date callDayTime = new Date(Long.valueOf(callDate));
+            String callTime = new SimpleDateFormat("HH:mm").format(callDayTime);
             String callDuration = cursor.getString(duration);
 
             int dircode = Integer.parseInt(callType);
@@ -64,7 +55,7 @@ public class DataLoader extends Activity {
             }
 
 //            inserting in database
-            db.insertdata(phNumber, callDuration);
+            db.insertdata(phNumber, callDuration, callTime);
             db.close();
 
             System.out.println(phNumber);
@@ -78,7 +69,7 @@ public class DataLoader extends Activity {
 
         db = new Database(context, "CallLog", null, 13795);
         StringBuffer sb = new StringBuffer();
-        cursor = db.getData();
+        cursor = db.getDataForGP();
 
         if (cursor.moveToFirst()) {
             do {
