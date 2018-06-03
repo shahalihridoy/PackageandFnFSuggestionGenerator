@@ -4,10 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.backup.BackupAgent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,25 +12,19 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.telephony.TelephonyManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity {
     Database db;
@@ -48,7 +38,7 @@ public class MainActivity extends Activity {
     };
 
     List<String> listPermissionsNeeded = new ArrayList<>();
-    PackageAnalyzer pkg = new PackageAnalyzer(this);
+    GrameenPhonePackageAnalyzer pkg = new GrameenPhonePackageAnalyzer(this);
     DataLoader dataLoader = new DataLoader(this, this);
 
     @Override
@@ -61,16 +51,18 @@ public class MainActivity extends Activity {
             BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
             backgroundServiceMarshmallow.startBackgroundService();
 
-        } else
+            //        get required data
+            if (checkPermission()){
+                getData();
+            }
+
+        } else{
             startService(new Intent(this, CallListenerService.class));
+            getData();
+        }
 
 //        creating database
         db = new Database(getApplicationContext(), "CallLog", null, 13795);
-
-//        get required data
-        if (checkPermission()){
-            getData();
-        }
 
     }
 
@@ -152,6 +144,7 @@ public class MainActivity extends Activity {
     }
 
 
+// get Data from call_history
 
     TextView packageName;
     TextView superfnf;
@@ -173,11 +166,18 @@ public class MainActivity extends Activity {
         @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                PackageAnalyzer.Helper helper= pkg.analyzeGP();
-                packageName.setText(helper.packageName);
-                superfnf.setText(helper.superFnf);
-                adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
-                fnfList.setAdapter(adapter);
+                String operaotr = getOperator();
+                switch (operaotr.toUpperCase().charAt(0)){
+                    case 'G':
+                        GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();
+                        packageName.setText(helper.packageName);
+                        superfnf.setText(helper.superFnf);
+                        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+                        fnfList.setAdapter(adapter);
+                    break;
+                    case 'R': getData();
+                }
+
                 dialog.dismiss();
             }
         };
@@ -192,4 +192,10 @@ public class MainActivity extends Activity {
         }.start();
 
     }
+
+//    check operator name
+public String getOperator(){
+    TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+    return manager.getNetworkOperatorName();
+}
 }

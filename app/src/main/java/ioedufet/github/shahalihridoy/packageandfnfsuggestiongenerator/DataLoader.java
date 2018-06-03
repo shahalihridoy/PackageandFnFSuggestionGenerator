@@ -16,6 +16,8 @@ import android.support.v7.view.menu.ActionMenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DataLoader extends Activity {
@@ -64,11 +66,15 @@ public class DataLoader extends Activity {
 //            inserting in database
             db.insertdata(phNumber, callDuration);
             db.close();
+
+            System.out.println(phNumber);
+            System.out.println(callDuration);
+            System.out.println(new SimpleDateFormat("HH:mm").format(callDayTime));
         }
         cursor.close();
     }
 
-    public void getCallDetailsFromDatabase(TextView textView) {
+    public void getCallDetailsFromDatabase() {
 
         db = new Database(context, "CallLog", null, 13795);
         StringBuffer sb = new StringBuffer();
@@ -80,9 +86,9 @@ public class DataLoader extends Activity {
                 sb.append("\n----------------------------------");
             } while (cursor.moveToNext());
         }
+
         db.close();
         cursor.close();
-        textView.append(sb);
     }
 
 }

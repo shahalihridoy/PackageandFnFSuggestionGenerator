@@ -9,13 +9,15 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Md Shah Ali on 31-Mar-18.
  */
 
-public class PackageAnalyzer {
+public class GrameenPhonePackageAnalyzer {
     Database db;
     Context context;
     double cost = 0;
@@ -23,11 +25,33 @@ public class PackageAnalyzer {
     Cursor c;
     Double min = 99999999.0;
     String packageName = null;
-
     //    constructor receiving context
-    public PackageAnalyzer(Context context) {
+    public GrameenPhonePackageAnalyzer(Context context) {
         db = new Database(context, "CallLog", null, 13795);
         this.context = context;
+    }
+
+    //    analyze overall grameenPhone
+    public Helper analyzeGP(){
+        c = db.getData();
+        Helper smile = smile();
+        Helper bondhu = bondhu();
+        Helper nishchinto = nishchinto();
+        Helper djuice = djuice();
+        switch (packageName.charAt(0)){
+            case 'S':return smile;
+            case 'B': return bondhu;
+            case 'D': return djuice;
+            case 'N': return nishchinto;
+        }
+        return new Helper();
+    }
+
+    public class Helper{
+        String superFnf = "";
+        ArrayList<String> fnf = new ArrayList<String>();
+        Double cost = 0.0;
+        String packageName="";
     }
 
     //    bondhu pakcage analysis
@@ -152,32 +176,5 @@ public class PackageAnalyzer {
             packageName = "Djuice Package";
         }
         return helper;
-    }
-
-//    analyze overall grameenPhone
-    public Helper analyzeGP(){
-        c = db.getData();
-        Helper smile = smile();
-        Helper bondhu = bondhu();
-        Helper nishchinto = nishchinto();
-        Helper djuice = djuice();
-        switch (packageName.charAt(0)){
-            case 'S':return smile;
-            case 'B': return bondhu;
-            case 'D': return djuice;
-            case 'N': return nishchinto;
-        }
-        return new Helper();
-    }
-    public String getOperator(){
-        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        return manager.getNetworkOperatorName();
-    }
-
-    public class Helper{
-        String superFnf = "";
-        ArrayList<String> fnf = new ArrayList<String>();
-        Double cost = 0.0;
-        String packageName="";
     }
 }
