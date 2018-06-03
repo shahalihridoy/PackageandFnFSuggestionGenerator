@@ -36,7 +36,7 @@ public class Database extends SQLiteOpenHelper {
     public Cursor getDataForGP()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("select number,sum(cast(round(duration/10)+0.5 as int)),callTime from call_history group by number order by sum(cast(round(duration/10)+0.5 as int)) DESC", null);
+        Cursor c = db.rawQuery("select number,sum(round((duration/10+0.9))*10),callTime from call_history group by number order by sum(round((duration/10+0.9))*10) DESC", null);
         return c;
     }
     public Cursor getDataForRobi(){

@@ -68,6 +68,7 @@ public class RobiPackageAnalyser {
         RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser.Helper();
         cost = 0;
         counter = 0;
+        c = db.getDataForRobi();
         boolean count_super_fnf = true;
 
         if (c.getCount() > 0) {
@@ -77,6 +78,8 @@ public class RobiPackageAnalyser {
 //                total 81 fnf & 0 super fnf
                 if (counter < 81) {
 
+                    System.out.println(c.getString(0));
+                    System.out.println(c.getString(1));
 //                  if number is Robi or Airtel
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
 

@@ -76,6 +76,8 @@ public class GrameenPhonePackageAnalyzer {
                 else
                     cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
 
+                System.out.println(c.getString(0));
+                System.out.println(c.getString(1));
             }
             while (c.moveToNext());
         }
