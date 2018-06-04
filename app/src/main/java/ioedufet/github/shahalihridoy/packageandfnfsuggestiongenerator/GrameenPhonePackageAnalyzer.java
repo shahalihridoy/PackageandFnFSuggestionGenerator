@@ -25,7 +25,7 @@ public class GrameenPhonePackageAnalyzer {
 
     //    analyze overall grameenPhone
     public Helper analyzeGP(){
-        c = db.getDataForGP();
+        c = db.tenSecondPulse();
         Helper smile = smile();
         Helper bondhu = bondhu();
         Helper nishchinto = nishchinto();

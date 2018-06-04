@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 String operaotr = getOperator();
-                new RobiPackageAnalyser(getApplicationContext()).megaFnF();
+                new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
                 switch (operaotr.toUpperCase().charAt(0)){
                     case 'G':
                         GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();

@@ -33,13 +33,13 @@ public class Database extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getDataForGP()
+    public Cursor tenSecondPulse()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("select number,sum(round((duration/10+0.9))*10),callTime from call_history group by number order by sum(round((duration/10+0.9))*10) DESC", null);
+        Cursor c = db.rawQuery("select number,sum(round(duration/10+0.5)*10),callTime from call_history group by number order by sum(round(duration/10+0.5)*10) DESC", null);
         return c;
     }
-    public Cursor getDataForRobi(){
+    public Cursor oneSecondPulse(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("select number,sum(duration),callTime from call_history group by number order by sum(duration) DESC", null);
         return c;

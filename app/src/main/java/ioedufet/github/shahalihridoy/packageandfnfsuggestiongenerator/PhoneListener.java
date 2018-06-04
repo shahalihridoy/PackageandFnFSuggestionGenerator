@@ -51,7 +51,7 @@ public class PhoneListener extends BroadcastReceiver {
                 phNumber = phNumber.substring(3, phNumber.length());
 
             Database db = new Database(context, "CallLog", null, 13795);
-            db.insertdata(cursor.getString(number),cursor.getString(duration),callTime);
+            db.insertdata(phNumber,phDuration,callTime);
             db.close();
 
 //            History h = new History(new Handler(), context);

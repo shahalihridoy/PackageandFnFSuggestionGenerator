@@ -26,7 +26,7 @@ public class DataLoader extends Activity {
 
         db = new Database(context, "CallLog", null, 13795);
         cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        if(db.getDataForGP().getCount() != 0)
+        if(db.tenSecondPulse().getCount() != 0)
             return;
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
         int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
@@ -69,7 +69,7 @@ public class DataLoader extends Activity {
 
         db = new Database(context, "CallLog", null, 13795);
         StringBuffer sb = new StringBuffer();
-        cursor = db.getDataForGP();
+        cursor = db.tenSecondPulse();
 
         if (cursor.moveToFirst()) {
             do {

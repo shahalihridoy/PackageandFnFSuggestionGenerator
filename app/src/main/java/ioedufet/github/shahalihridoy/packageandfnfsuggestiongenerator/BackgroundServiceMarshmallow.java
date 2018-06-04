@@ -94,11 +94,8 @@ public class BackgroundServiceMarshmallow extends JobService {
         else if(phNumber.charAt(0) == '+')
             phNumber = phNumber.substring(3, phNumber.length());
 
-        System.out.println(phNumber);
-        System.out.println(phDuration);
-
         Database db = new Database(getApplicationContext(), "CallLog", null, 13795);
-        db.insertdata(cursor.getString(number),cursor.getString(duration),callTime);
+        db.insertdata(phNumber,phDuration,callTime);
         db.close();
     }
 
