@@ -167,17 +167,25 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 String operaotr = getOperator();
-                new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
-                switch (operaotr.toUpperCase().charAt(0)){
-                    case 'G':
-                        GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();
-                        packageName.setText(helper.packageName);
-                        superfnf.setText(helper.superFnf);
-                        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
-                        fnfList.setAdapter(adapter);
-                    break;
-                    case 'R': getData();
-                }
+                BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
+                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
+                GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
+                packageName.setText(helper.packageName);
+                superfnf.setText(helper.superFnf);
+                adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+                fnfList.setAdapter(adapter);
+
+
+//                switch (operaotr.toUpperCase().charAt(0)){
+//                    case 'G':
+//                        GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();
+//                        packageName.setText(helper.packageName);
+//                        superfnf.setText(helper.superFnf);
+//                        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+//                        fnfList.setAdapter(adapter);
+//                    break;
+//                    case 'R': getData();
+//                }
 
                 dialog.dismiss();
             }
