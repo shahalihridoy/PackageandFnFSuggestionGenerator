@@ -52,11 +52,11 @@ public class MainActivity extends Activity {
             backgroundServiceMarshmallow.startBackgroundService();
 
             //        get required data
-            if (checkPermission()){
+            if (checkPermission()) {
                 getData();
             }
 
-        } else{
+        } else {
             startService(new Intent(this, CallListenerService.class));
             getData();
         }
@@ -150,11 +150,12 @@ public class MainActivity extends Activity {
     TextView superfnf;
     ListView fnfList;
     ArrayAdapter<String> adapter;
+
     private void getData() {
         packageName = (TextView) findViewById(R.id.package_name);
-        superfnf= (TextView) findViewById(R.id.super_fnf);
+        superfnf = (TextView) findViewById(R.id.super_fnf);
         fnfList = (ListView) findViewById(R.id.fnf_list);
-        adapter = new ArrayAdapter<String>(this,0);
+        adapter = new ArrayAdapter<String>(this, 0);
 
         //        showing loading loaderHandler on create
         builder = new AlertDialog.Builder(MainActivity.this);
@@ -167,12 +168,14 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 String operaotr = getOperator();
-                BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
-                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
-                GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
+//                BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
+//                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
+//                GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
+
+                PackageAnalyser.Helper helper = new PackageAnalyser(getApplicationContext()).analysePackage();
                 packageName.setText(helper.packageName);
                 superfnf.setText(helper.superFnf);
-                adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+                adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list, R.id.list_text, helper.fnf);
                 fnfList.setAdapter(adapter);
 
 
@@ -202,9 +205,9 @@ public class MainActivity extends Activity {
 
     }
 
-//    check operator name
-public String getOperator(){
-    TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-    return manager.getNetworkOperatorName();
-}
+    //    check operator name
+    public String getOperator() {
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        return manager.getNetworkOperatorName();
+    }
 }

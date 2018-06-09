@@ -75,9 +75,6 @@ public class GrameenPhonePackageAnalyzer {
 //                other number calling cost
                 else
                     cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
-
-                System.out.println(c.getString(0));
-                System.out.println(c.getString(1));
             }
             while (c.moveToNext());
         }
@@ -86,9 +83,11 @@ public class GrameenPhonePackageAnalyzer {
 //        Toast.makeText(context, "bondhu = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
 
         helper.packageName = "Bondhu Package";
+        System.out.println(helper.packageName+": "+cost);
 
         if(min>cost){
             min = cost;
+            helper.cost = min;
             packageName = "Bondhu Package";
         }
         return helper;
@@ -113,8 +112,10 @@ public class GrameenPhonePackageAnalyzer {
         }
 //        Toast.makeText(context,"smile = "+Double.toString(cost),Toast.LENGTH_SHORT).show();
         helper.packageName = "Smile Package";
+        System.out.println(helper.packageName+": "+cost);
         if(min>cost){
             min = cost;
+            helper.cost = min;
             packageName = "Smile Package";
         }
         return helper;
@@ -132,8 +133,10 @@ public class GrameenPhonePackageAnalyzer {
         }
 //        Toast.makeText(context, "nishchinto = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
         helper.packageName = "Nishchinto Package";
+        System.out.println(helper.packageName+": "+cost);
         if(min>cost){
             min = cost;
+            helper.cost = min;
             packageName = "Nishchinto Package";
         }
         return helper;
@@ -165,8 +168,10 @@ public class GrameenPhonePackageAnalyzer {
         }
 
         helper.packageName = "Djuice Package";
+        System.out.println(helper.packageName+": "+cost);
         if(min>cost){
             min = cost;
+            helper.cost = min;
             packageName = "Djuice Package";
         }
         return helper;

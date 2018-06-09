@@ -113,6 +113,7 @@ public class BanglalinkPackageAnalyser {
         if (cost < min) {
             min = cost;
             helper.packageName = "Desh 10 FnF";
+            helper.cost = cost;
             final_helper = helper;
         }
         System.out.println("Desh 10fnf cost " + cost);
@@ -131,6 +132,7 @@ public class BanglalinkPackageAnalyser {
             min = cost;
             helper.fnf.add("Not Applicable");
             helper.packageName = "Desh ek rate darun";
+            helper.cost = cost;
             final_helper = helper;
         }
         System.out.println("Desh ek rate darun " + cost);
@@ -154,6 +156,7 @@ public class BanglalinkPackageAnalyser {
             min = cost;
             helper.fnf.add("Not Applicable");
             helper.packageName = "Desh Hello";
+            helper.cost = cost;
             final_helper = helper;
         }
         System.out.println("Desh hello " + cost);

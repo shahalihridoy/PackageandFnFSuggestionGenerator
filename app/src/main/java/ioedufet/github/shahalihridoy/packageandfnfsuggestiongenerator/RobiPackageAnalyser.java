@@ -102,6 +102,7 @@ public class RobiPackageAnalyser {
         if(cost<min){
             min = cost;
             helper.packageName = "Mega FnF";
+            helper.cost = cost;
             final_helper = helper;
         }
     }
@@ -134,6 +135,7 @@ public class RobiPackageAnalyser {
         if(cost<min){
             min = cost;
             helper.packageName = "Hoot Hut Chomok";
+            helper.cost = cost;
             final_helper = helper;
         }
         System.out.println(cost);
@@ -159,6 +161,7 @@ public class RobiPackageAnalyser {
             min = cost;
             helper.packageName = "Robi Club";
             helper.fnf.add("Not Applicable");
+            helper.cost = cost;
             final_helper = helper;
         }
     }
@@ -179,6 +182,7 @@ public class RobiPackageAnalyser {
             min = cost;
             helper.packageName = "Goti";
             helper.fnf.add("Not Applicable");
+            helper.cost = cost;
             final_helper = helper;
         }
     }
@@ -203,6 +207,7 @@ public class RobiPackageAnalyser {
             min = cost;
             helper.packageName = "Nobanno";
             helper.fnf.add("Not Applicable");
+            helper.cost = cost;
             final_helper = helper;
         }
     }
@@ -229,6 +234,7 @@ public class RobiPackageAnalyser {
             min = cost;
             helper.packageName = "Shorol";
             helper.fnf.add("Not Applicable");
+            helper.cost = cost;
             final_helper = helper;
         }
     }
@@ -248,6 +254,7 @@ public class RobiPackageAnalyser {
             min = cost;
             helper.packageName = "Mega FnF";
             helper.fnf.add("Not Applicable");
+            helper.cost = cost;
             final_helper = helper;
         }
     }
