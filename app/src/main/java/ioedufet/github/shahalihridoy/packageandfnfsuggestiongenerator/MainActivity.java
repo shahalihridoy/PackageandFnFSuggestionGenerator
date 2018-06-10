@@ -168,10 +168,10 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 String operaotr = getOperator();
-//                BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
+//                BanglalinkPackageAnalyser.Helper helper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
 //                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
 //                GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
-
+//                AirtlePackageAnalyser.Helper helper = new AirtlePackageAnalyser(getApplicationContext()).analyseAirtel();
                 PackageAnalyser.Helper helper = new PackageAnalyser(getApplicationContext()).analysePackage();
                 packageName.setText(helper.packageName);
                 superfnf.setText(helper.superFnf);

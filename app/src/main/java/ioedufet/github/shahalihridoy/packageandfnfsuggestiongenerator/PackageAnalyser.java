@@ -16,7 +16,7 @@ public class PackageAnalyser {
         BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(context).analyseBanglalink();
         RobiPackageAnalyser.Helper robihelper = new RobiPackageAnalyser(context).analyzeRobi();
         GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(context).analyzeGP();
-        AirtlePackageAnalyser.Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAllPackages();
+        AirtlePackageAnalyser.Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAirtel();
 
         double min = 99999.0;
         if(min>robihelper.cost){

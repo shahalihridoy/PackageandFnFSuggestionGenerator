@@ -18,7 +18,11 @@ public class BanglalinkPackageAnalyser {
     Double min = 99999999.0;
     String packageName = null;
     Helper final_helper;
-    Helper helper = new Helper();
+
+    Helper playHelper = new Helper("Play");
+    Helper desh10Helper = new Helper("Desh 10 FnF");
+    Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun");
+    Helper helloHelper = new Helper("Hello Package");
 
     //    constructor receiving context
     public BanglalinkPackageAnalyser(Context context) {
@@ -27,139 +31,109 @@ public class BanglalinkPackageAnalyser {
     }
 
     public Helper analyseBanglalink() {
-        play();
-        desh10fnf();
-        deshEkRateDarun();
-        hello();
+
+        analyseOneSecondPulse();
+        analyseTenSecondPulse();
+
+        if(min>playHelper.cost){
+            min = playHelper.cost;
+            final_helper = playHelper;
+            System.out.println(playHelper.packageName+": "+playHelper.cost);
+        }
+        if(min>deshEkRateHelper.cost){
+            min = deshEkRateHelper.cost;
+            final_helper = deshEkRateHelper;
+            System.out.println(deshEkRateHelper.packageName+": "+deshEkRateHelper.cost);
+        }
+        if(min>desh10Helper.cost){
+            min = desh10Helper.cost;
+            final_helper = desh10Helper;
+            System.out.println(desh10Helper.packageName+": "+desh10Helper.cost);
+        }
+        if(min>helloHelper.cost){
+            min = helloHelper.cost;
+            final_helper = helloHelper;
+            System.out.println(helloHelper.packageName+": "+helloHelper.cost);
+        }
+
+//        play();
+//        desh10fnf();
+//        deshEkRateDarun();
+//        hello();
         return final_helper;
     }
 
-    public void play() {
-        int sfnf = 0;
+    public void analyseOneSecondPulse(){
+        playHelper.fnf.clear();
         int otherfnf = 0;
         c = db.oneSecondPulse();
-
-//        this loop is for one second pulse
-        if (c.getCount() > 0) {
+        if(c.getCount()>0){
             c.moveToFirst();
             do {
-                if (c.getString(0).charAt(2) == '9' && sfnf < 1) {
-                    cost += Double.valueOf(c.getString(1)) * 0.55 / 100;
-                    helper.superFnf = c.getString(0);
-                } else if (otherfnf < 18) {
+//                play pack
+                if (c.getString(0).charAt(2) == '9' && playHelper.sfnf) {
+                    playHelper.cost += Double.valueOf(c.getString(1)) * 0.55 / 100;
+                    playHelper.superFnf = c.getString(0);
+                    playHelper.sfnf = false;
+                } else if (playHelper.otherfnf < 18) {
                     if (c.getString(0).charAt(2) == '9') {
-                        cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
-                        helper.fnf.add(c.getString(0));
+                        playHelper.cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
+                        playHelper.fnf.add(c.getString(0));
                     } else {
-                        helper.fnf.add(c.getString(0));
+                        playHelper.fnf.add(c.getString(0));
                     }
-                    otherfnf++;
+                    playHelper.otherfnf++;
 //                    other fnf is 10 second pulse
 //                    calculate cost with other loop
-                }
-            } while (c.moveToNext());
-        }
 
-//        this loop is for ten second pulse
+
+                }
+
+            }while (c.moveToNext());
+        }
+    }
+
+    public void analyseTenSecondPulse(){
         c = db.tenSecondPulse();
-        if (c.getCount() > 0) {
+        if(c.getCount()>0){
             c.moveToFirst();
             do {
-                if (helper.superFnf.equals(c.getString(0)))
-                    continue;
-                else if (helper.fnf.contains(c.getString(0)) && c.getString(0).charAt(2) != '9') {
-                    cost += Double.valueOf(c.getString(1)) * 11 / 1000;
+//                play pack
+                if (playHelper.superFnf.equals(c.getString(0)))
+                    min = 99999999.0; //just to skip this test
+                else if (playHelper.fnf.contains(c.getString(0)) && c.getString(0).charAt(2) != '9') {
+                    playHelper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
                 } else {
                     if (isPeakHour("00:00", "16:00", c.getString(2)))
-                        cost += Double.valueOf(c.getString(1)) * 22 / 1000;
-                    else cost += Double.valueOf(c.getString(1)) * 27 / 1000;
+                        playHelper.cost += Double.valueOf(c.getString(1)) * 22 / 1000;
+                    else playHelper.cost += Double.valueOf(c.getString(1)) * 27 / 1000;
                 }
-            } while (c.moveToNext());
-        }
 
-        if (cost < min) {
-            min = cost;
-            helper.packageName = "Play";
-            final_helper = helper;
-        }
-        System.out.println("Play cost " + cost);
-    }
-
-    public void desh10fnf() {
-//        10 second pulse already in cursor
-        cost = 0;
-        int sfnf = 0;
-        int fnf = 0;
-        double helloCost = 0;
-        double deshekratecost = 0;
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-            do {
-                if (c.getString(0).charAt(2) == '9' && sfnf < 1) {
+//                desh 10 fnf
+                if (c.getString(0).charAt(2) == '9' && desh10Helper.sfnf) {
+                    desh10Helper.sfnf = false;
                     if (isPeakHour("00:00", "16:00", c.getString(2)))
-                        cost += Double.valueOf(c.getString(1)) * 6 / 1000;
-                    else cost += Double.valueOf(c.getString(1)) * 7 / 1000;
-                } else if (fnf < 9) {
+                        desh10Helper.cost += Double.valueOf(c.getString(1)) * 6 / 1000;
+                    else desh10Helper.cost += Double.valueOf(c.getString(1)) * 7 / 1000;
+                } else if (desh10Helper.otherfnf < 9) {
                     if (isPeakHour("00:00", "16:00", c.getString(2)))
-                        cost += Double.valueOf(c.getString(1)) * 11 / 1000;
-                    else cost += Double.valueOf(c.getString(1)) * 15 / 1000;
+                        desh10Helper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
+                    else desh10Helper.cost += Double.valueOf(c.getString(1)) * 15 / 1000;
                 } else if (c.getString(0).charAt(2) == '9')
-                    cost += Double.valueOf(c.getString(1)) * 27 / 1000;
-                else cost += Double.valueOf(c.getString(1)) * 28.67 / 1000;
+                    desh10Helper.cost += Double.valueOf(c.getString(1)) * 27 / 1000;
+                else desh10Helper.cost += Double.valueOf(c.getString(1)) * 28.67 / 1000;
 
-            } while (c.moveToNext());
+//                desh ek rate darun pack
+                deshEkRateHelper.cost += Double.valueOf(c.getString(1)) * 20.83 / 1000;
+
+//                hello pack
+                if (c.getString(0).charAt(2) == '9' && helloHelper.sfnf){
+                    helloHelper.superFnf = c.getString(0);
+                    helloHelper.cost += Double.valueOf(c.getString(1)) * 5.5 / 1000;
+                } else helloHelper.cost += Double.valueOf(c.getString(1)) * 12 / 1000;
+
+            }while (c.moveToNext());
         }
-
-        if (cost < min) {
-            min = cost;
-            helper.packageName = "Desh 10 FnF";
-            helper.cost = cost;
-            final_helper = helper;
-        }
-        System.out.println("Desh 10fnf cost " + cost);
-    }
-
-    public void deshEkRateDarun(){
-        cost = 0;
-        if(c.getCount()>0) {
-            c.moveToFirst();
-            do {
-                cost += Double.valueOf(c.getString(1)) * 20.83 / 1000;
-            } while (c.moveToNext());
-        }
-
-        if (cost < min) {
-            min = cost;
-            helper.fnf.add("Not Applicable");
-            helper.packageName = "Desh ek rate darun";
-            helper.cost = cost;
-            final_helper = helper;
-        }
-        System.out.println("Desh ek rate darun " + cost);
-    }
-
-    public  void hello(){
-        cost = 0;
-        int sfnf = 0;
-        if(c.getCount()>0) {
-            c.moveToFirst();
-            do {
-                if (c.getString(0).charAt(2) == '9' && sfnf<1){
-                    helper.superFnf = c.getString(0);
-                    cost += Double.valueOf(c.getString(1)) * 5.5 / 1000;
-                } else cost += Double.valueOf(c.getString(1)) * 12 / 1000;
-
-            } while (c.moveToNext());
-        }
-
-        if (cost < min) {
-            min = cost;
-            helper.fnf.add("Not Applicable");
-            helper.packageName = "Desh Hello";
-            helper.cost = cost;
-            final_helper = helper;
-        }
-        System.out.println("Desh hello " + cost);
     }
 
     public boolean isPeakHour(String start, String end, String time) {
@@ -183,7 +157,14 @@ public class BanglalinkPackageAnalyser {
     public class Helper {
         String superFnf = "Not Applicable";
         ArrayList<String> fnf = new ArrayList<String>();
-        Double cost = 0.0;
         String packageName = "";
+        double cost = 0;
+        boolean sfnf = true;
+        int otherfnf = 0;
+
+        public Helper(String packageName) {
+            this.packageName = packageName;
+            fnf.add("Not Applicable");
+        }
     }
 }

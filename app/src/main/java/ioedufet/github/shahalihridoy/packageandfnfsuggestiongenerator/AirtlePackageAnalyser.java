@@ -16,24 +16,6 @@ public class AirtlePackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    int counter = 0;
-    int addaCounter = 0;
-    int superAddaCounter = 0;
-    int dostiCounter = 0;
-    int hoichoiCounter = 0;
-
-
-    double cost = 0;
-    double golpocost = 0;
-    double addacost = 0;
-    double superaddacost = 0;
-    double dosticost = 0;
-    double hoichoicost = 0;
-    //    double gangtalkcost = 0;
-//    double dolbolcost = 0;
-    double foorticost = 0;
-    double kothacost = 0;
-
     Helper golpoHelper = new Helper("Golpo");
     Helper addaHelper = new Helper("Adda");
     Helper superAddaHelper = new Helper("Super Adda");
@@ -50,44 +32,50 @@ public class AirtlePackageAnalyser {
         this.context = context;
     }
 
-    public Helper analyseAllPackages() {
+    public Helper analyseAirtel() {
+
+        addaHelper.fnf.clear();
+        superAddaHelper.fnf.clear();
+        dostiHelper.fnf.clear();
+        hoichoiHelper.fnf.clear();
 
         tenSecondPulsePackageAnalysis();
         oneSecondPulsePackageAnalysis();
 
-        if (golpocost < min) {
-            min = golpocost;
+        if (golpoHelper.cost < min) {
+            min = golpoHelper.cost;
             final_helper = golpoHelper;
-            final_helper.cost = min;
-        } else if (addacost < min) {
-            min = addacost;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if (addaHelper.cost < min) {
+            min = addaHelper.cost;
             final_helper = addaHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        if (superaddacost < min) {
-            min = superaddacost;
+        if (superAddaHelper.cost < min) {
+            min = superAddaHelper.cost;
             final_helper = superAddaHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        if (dosticost < min) {
-            min = dosticost;
+        if (dostiHelper.cost < min) {
+            min = dostiHelper.cost;
             final_helper = dostiHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        if (foorticost < min) {
-            min = foorticost;
+        if (foortiHelper.cost < min) {
+            min = foortiHelper.cost;
             final_helper = foortiHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        if (hoichoicost < min) {
-            min = hoichoicost;
+        if (hoichoiHelper.cost < min) {
+            min = hoichoiHelper.cost;
             final_helper = hoichoiHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        if (kothacost < min) {
-            min = kothacost;
+        if (kothaHelper.cost < min) {
+            min = kothaHelper.cost;
             final_helper = kothaHelper;
-            final_helper.cost = min;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
         return final_helper;
     }
@@ -99,56 +87,56 @@ public class AirtlePackageAnalyser {
             do {
 
 //                golpo pack
-                golpocost += Double.valueOf(c.getString(1)) * 1667 / 1000;
+                golpoHelper.cost += Double.valueOf(c.getString(1)) * 16.67 / 1000;
 
 //                adda pack
-                if (addaCounter < 8) {
+                if (addaHelper.counter < 8) {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        addacost += Double.valueOf(c.getString(1)) * 6 / 1000;
+                        addaHelper.cost += Double.valueOf(c.getString(1)) * 6 / 1000;
                         addaHelper.fnf.add(c.getString(0));
                     } else {
-                        addacost += Double.valueOf(c.getString(1)) * 13.333 / 1000;
+                        addaHelper.cost += Double.valueOf(c.getString(1)) * 13.333 / 1000;
                         addaHelper.fnf.add(c.getString(0));
                     }
                 } else {
-                    addacost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
+                    addaHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
 
 //                super add pack
-                if (superAddaCounter < 29) {
+                if (superAddaHelper.counter < 29) {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        superaddacost += Double.valueOf(c.getString(1)) * 5 / 1000;
+                        superAddaHelper.cost += Double.valueOf(c.getString(1)) * 5 / 1000;
                         superAddaHelper.fnf.add(c.getString(0));
                     } else {
-                        superaddacost += Double.valueOf(c.getString(1)) * 10 / 1000;
+                        superAddaHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
                         superAddaHelper.fnf.add(c.getString(0));
                     }
                 } else {
-                    superaddacost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
+                    superAddaHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
 
 //                dosti pack
-                if (dostiCounter < 5) {
+                if (dostiHelper.counter < 5) {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        dosticost += Double.valueOf(c.getString(1)) * 4.1667 / 1000;
+                        dostiHelper.cost += Double.valueOf(c.getString(1)) * 4.1667 / 1000;
                         dostiHelper.fnf.add(c.getString(0));
                     } else {
-                        dosticost += Double.valueOf(c.getString(1)) * 11 / 1000;
+                        dostiHelper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
                         dostiHelper.fnf.add(c.getString(0));
                     }
                 } else {
-                    dosticost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
+                    dostiHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
 
 //                foorti pack
                 if (isPeakHour("00:00", "15:00", c.getString(2))) {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        foorticost += Double.valueOf(c.getString(1)) * 6 / 1000;
-                    } else foorticost += Double.valueOf(c.getString(1)) * 13.1667 / 1000;
+                        foortiHelper.cost += Double.valueOf(c.getString(1)) * 6 / 1000;
+                    } else foortiHelper.cost += Double.valueOf(c.getString(1)) * 13.1667 / 1000;
                 } else {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        foorticost += Double.valueOf(c.getString(1)) * 16 / 1000;
-                    } else foorticost += Double.valueOf(c.getString(1)) * 21.5 / 1000;
+                        foortiHelper.cost += Double.valueOf(c.getString(1)) * 16 / 1000;
+                    } else foortiHelper.cost+= Double.valueOf(c.getString(1)) * 21.5 / 1000;
                 }
 
             } while (c.moveToNext());
@@ -161,20 +149,20 @@ public class AirtlePackageAnalyser {
             c.moveToFirst();
             do {
 //                hoichoi pack
-                if (hoichoiCounter < 2) {
+                if (hoichoiHelper.counter < 2) {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                        hoichoicost += Double.valueOf(c.getString(1)) * 0.5 / 100;
-                        hoichoiHelper.fnf.add(c.getString(1));
+                        hoichoiHelper.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
+                        hoichoiHelper.fnf.add(c.getString(0));
                     } else {
-                        hoichoicost += Double.valueOf(c.getString(1)) * 1 / 100;
-                        hoichoiHelper.fnf.add(c.getString(1));
+                        hoichoiHelper.cost += Double.valueOf(c.getString(1)) * 1 / 100;
+                        hoichoiHelper.fnf.add(c.getString(0));
                     }
-                } else hoichoicost += Double.valueOf(c.getString(1)) * 1.667 / 100;
+                } else hoichoiHelper.cost += Double.valueOf(c.getString(1)) * 1.667 / 100;
 
 //                kotha pack
                 if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                    kothacost += Double.valueOf(c.getString(1)) * 1.65 / 100;
-                } else kothacost += Double.valueOf(c.getString(1)) * 2.15 / 100;
+                    kothaHelper.cost += Double.valueOf(c.getString(1)) * 1.65 / 100;
+                } else kothaHelper.cost += Double.valueOf(c.getString(1)) * 2.15 / 100;
 
             } while (c.moveToNext());
         }
@@ -203,6 +191,7 @@ public class AirtlePackageAnalyser {
         ArrayList<String> fnf = new ArrayList<String>();
         String packageName = "";
         double cost = 0;
+        int counter = 0;
 
         public Helper(String packageName) {
             this.packageName = packageName;

@@ -13,10 +13,18 @@ public class GrameenPhonePackageAnalyzer {
     Database db;
     Context context;
     double cost = 0;
+    boolean count_super_fnf = true;
     int counter;
+    Helper final_helper;
     Cursor c;
     Double min = 99999999.0;
     String packageName = null;
+
+    Helper bondhuHelper = new Helper("Bondhu Package");
+    Helper smileHelper = new Helper("Smile Package");
+    Helper nishchintoHelper = new Helper("Nishchinto Package");
+    Helper djuiceHelper = new Helper("Djuice Package");
+
     //    constructor receiving context
     public GrameenPhonePackageAnalyzer(Context context) {
         db = new Database(context, "CallLog", null, 13795);
@@ -24,156 +32,100 @@ public class GrameenPhonePackageAnalyzer {
     }
 
     //    analyze overall grameenPhone
-    public Helper analyzeGP(){
+    public Helper analyzeGP() {
+        analyseTenSecondPulse();
+        return final_helper;
+    }
+
+    public void analyseTenSecondPulse() {
+        nishchintoHelper.fnf.add("Not Applicable");
         c = db.tenSecondPulse();
-        Helper smile = smile();
-        Helper bondhu = bondhu();
-        Helper nishchinto = nishchinto();
-        Helper djuice = djuice();
-        switch (packageName.charAt(0)){
-            case 'S':return smile;
-            case 'B': return bondhu;
-            case 'D': return djuice;
-            case 'N': return nishchinto;
-        }
-        return new Helper();
-    }
-
-    public class Helper{
-        String superFnf = "";
-        ArrayList<String> fnf = new ArrayList<String>();
-        Double cost = 0.0;
-        String packageName="";
-    }
-
-    //    bondhu pakcage analysis
-    public Helper bondhu() {
-//        number will be sent based on call duration asc and 017
-        Helper helper = new Helper();
-        cost = 0;
-        counter = 0;
-        boolean count_super_fnf = true;
-
         if (c.getCount() > 0) {
             c.moveToFirst();
-
             do {
+//                bondhu pack
+
 //                total 18 fnf including super fnf
-                if (counter < 19) {
+                if (bondhuHelper.counter < 19) {
                     if (c.getString(0).charAt(2) == '7' && count_super_fnf) {
-                        helper.superFnf = c.getString(0);
-                        cost += Double.valueOf(c.getString(1)) / 1000 * 5.5; //taka
+                        bondhuHelper.superFnf = c.getString(0);
+                        bondhuHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 5.5; //taka
                         count_super_fnf = false;
-                        counter++;
                     } else {
-                        helper.fnf.add(c.getString(0));
-                        cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
+                        bondhuHelper.fnf.add(c.getString(0));
+                        bondhuHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
                     }
-                    counter++;
+                    bondhuHelper.counter++;
                 }
 
 //                other number calling cost
                 else
-                    cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
-            }
-            while (c.moveToNext());
-        }
+                    bondhuHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
 
-//        cost = cost + cost*.21; //with 21% vat
-//        Toast.makeText(context, "bondhu = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
 
-        helper.packageName = "Bondhu Package";
-        System.out.println(helper.packageName+": "+cost);
-
-        if(min>cost){
-            min = cost;
-            helper.cost = min;
-            packageName = "Bondhu Package";
-        }
-        return helper;
-    }
-
-    //    smile package analysis
-    public Helper smile() {
-        Helper helper = new Helper();
-        counter = 0;
-        cost = 0;
-        if (c.moveToFirst()) {
-            do {
+//                smile pack
 //                3 gp to gp fnf
-                if (c.getString(0).charAt(2) == '7' && counter < 4) {
-                    helper.fnf.add(c.getString(0));
-                    cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
-                    counter++;
+                if (c.getString(0).charAt(2) == '7' && smileHelper.counter < 4) {
+                    smileHelper.fnf.add(c.getString(0));
+                    smileHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
+                    smileHelper.counter++;
                 } else
-                    cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
-            }
-            while (c.moveToNext());
-        }
-//        Toast.makeText(context,"smile = "+Double.toString(cost),Toast.LENGTH_SHORT).show();
-        helper.packageName = "Smile Package";
-        System.out.println(helper.packageName+": "+cost);
-        if(min>cost){
-            min = cost;
-            helper.cost = min;
-            packageName = "Smile Package";
-        }
-        return helper;
-}
+                    smileHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
 
-    //    nishchinto package analysis
-    public Helper nishchinto() {
-        Helper helper = new Helper();
-        cost = 0;
-        if (c.moveToFirst()) {
-            do {
-                cost += Double.valueOf(c.getString(1)) / 1000 * 21; //taka
-            }
-            while (c.moveToNext());
-        }
-//        Toast.makeText(context, "nishchinto = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
-        helper.packageName = "Nishchinto Package";
-        System.out.println(helper.packageName+": "+cost);
-        if(min>cost){
-            min = cost;
-            helper.cost = min;
-            packageName = "Nishchinto Package";
-        }
-        return helper;
-    }
 
-    //    djuice package analysis
-    public Helper djuice() {
-        Helper helper = new Helper();
-        counter = 0;
-        cost = 0;
-        if (c.moveToFirst()) {
-            do {
-//                10 fnf to any number
+//                nishchinto pack
+                nishchintoHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 21; //taka
+
+
+//                djuice pack
+ //                10 fnf to any number
                 if (counter < 11) {
 //                    adding number to fnf list
-                    helper.fnf.add(c.getString(0));
-                    cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
-                    counter++;
+                    djuiceHelper.fnf.add(c.getString(0));
+                    djuiceHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
+                    djuiceHelper.counter++;
                 } else {
                     if (c.getString(0).charAt(2) == '7')
-                        cost += Double.valueOf(c.getString(1)) / 1000 * 20.5; //taka
+                        djuiceHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 20.5; //taka
                     else
-                        cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
+                        djuiceHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
                 }
-            }
-            while (c.moveToNext());
 
-//            Toast.makeText(context, "djuice = " + Double.toString(cost), Toast.LENGTH_SHORT).show();
+
+            } while (c.moveToNext());
         }
 
-        helper.packageName = "Djuice Package";
-        System.out.println(helper.packageName+": "+cost);
-        if(min>cost){
-            min = cost;
-            helper.cost = min;
-            packageName = "Djuice Package";
+        if(min>bondhuHelper.cost){
+            min = bondhuHelper.cost;
+            final_helper = bondhuHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
-        return helper;
+        if(min>smileHelper.cost){
+            min = smileHelper.cost;
+            final_helper = smileHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>nishchintoHelper.cost){
+            min = nishchintoHelper.cost;
+            final_helper = nishchintoHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>djuiceHelper.cost){
+            min = djuiceHelper.cost;
+            final_helper = djuiceHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+    }
+
+    public class Helper {
+        String superFnf = "Not Applicable";
+        ArrayList<String> fnf = new ArrayList<String>();
+        String packageName = "";
+        double cost = 0;
+        int counter = 0;
+
+        public Helper(String packageName) {
+            this.packageName = packageName;
+        }
     }
 }

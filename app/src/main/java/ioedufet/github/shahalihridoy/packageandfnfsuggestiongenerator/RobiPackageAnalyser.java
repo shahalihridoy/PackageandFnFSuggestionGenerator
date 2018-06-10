@@ -13,10 +13,21 @@ public class RobiPackageAnalyser {
     Context context;
     double cost = 0;
     int counter;
+    boolean sfnf = true;
     Cursor c;
     Double min = 99999999.0;
     String packageName = null;
     Helper final_helper;
+
+    Helper megaHelper = new Helper("Mega FnF");
+    Helper gotiHelper = new Helper("Goti Package");
+    Helper hoothutHelper = new Helper("Hoot Hut Chomok");
+    Helper clubHelper = new Helper("Robi Club");
+    Helper nobannoHelper = new Helper("Nobanno Package");
+    Helper shorolHelper = new Helper("Shorol Package");
+    Helper noorHelper = new Helper("Noor Package");
+
+
     //    constructor receiving context
     public RobiPackageAnalyser(Context context) {
         db = new Database(context, "CallLog", null, 13795);
@@ -24,16 +35,138 @@ public class RobiPackageAnalyser {
     }
 
     //    analyze overall Robi Package
-
     public RobiPackageAnalyser.Helper analyzeRobi() {
-        megaFnF();
-        hutHutChomok32();
-        robiClub34();
-        goti36();
-        nobanno37();
-        shorol39();
-        noor();
+
+        analyseOneSecondPulse();
+        analyseTenSecondPulse();
+
+        if(min>megaHelper.cost){
+            min = megaHelper.cost;
+            final_helper = megaHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>clubHelper.cost){
+            min = clubHelper.cost;
+            final_helper = clubHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>gotiHelper.cost){
+            min = gotiHelper.cost;
+            final_helper = gotiHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>shorolHelper.cost){
+            min = shorolHelper.cost;
+            final_helper = shorolHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>noorHelper.cost){
+            min = noorHelper.cost;
+            final_helper = nobannoHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>hoothutHelper.cost){
+            min = megaHelper.cost;
+            final_helper = megaHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>nobannoHelper.cost){
+            min = nobannoHelper.cost;
+            final_helper = nobannoHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
         return final_helper;
+    }
+
+    public void analyseOneSecondPulse(){
+        megaHelper.fnf.clear();
+        c = db.oneSecondPulse();
+        if(c.getCount()>0){
+            c.moveToFirst();
+            do {
+//                mega fnf pack
+//                total 81 fnf & 0 super fnf
+                if (megaHelper.counter < 80) {
+
+                    megaHelper.fnf.add(c.getString(0));
+//                  if number is Robi or Airtel
+                    if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
+
+//                    when call is creatd within  (12am to 4pm)
+                        if (isPeakHour("00:00","16:00",c.getString(2))) {
+                            megaHelper.cost += Double.valueOf(c.getString(1)) * 0.8 / 100;
+                        } else
+                            megaHelper.cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
+                    } else {
+                        megaHelper.cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
+                    }
+                    megaHelper.counter++;
+                }
+
+//                when number is not in FnF list
+                else if (isPeakHour("00:00","16:00",c.getString(2))) {
+                    megaHelper.cost += Double.valueOf(c.getString(1)) * 2.55 / 100;
+                } else
+                    megaHelper.cost += Double.valueOf(c.getString(1)) * 2.60 / 100;
+
+            }while (c.moveToNext());
+        }
+    }
+
+    public void analyseTenSecondPulse(){
+        int selfFnf = 0;
+        int otherFnf = 0;
+        c = db.tenSecondPulse();
+        if(c.getCount()>0){
+            c.moveToFirst();
+            do {
+//                hoot hut pack
+//                when fnf is robi/airtel
+                if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
+                    if (selfFnf < 4)
+                        hoothutHelper.fnf.add(c.getString(0));
+                    hoothutHelper.cost += Double.valueOf(c.getString(1)) * 13 / 1000;
+                    selfFnf++;
+                } else if ((c.getString(0).charAt(2) != '8' || c.getString(0).charAt(2) != '6') && otherFnf < 3) {
+                    hoothutHelper.fnf.add(c.getString(0));
+                    hoothutHelper.cost += Double.valueOf(c.getString(1)) * 13 / 1000;
+                    otherFnf++;
+                } else {
+                    megaHelper.cost += Double.valueOf(c.getString(1)) * 22 / 1000;
+                }
+
+
+//                robi club pack
+                if ((c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') && isPeakHour("00:00","16:00",c.getString(2))) {
+                    clubHelper.cost+= Double.valueOf(c.getString(1)) * 13 / 1000;
+                } else
+                    clubHelper.cost += Double.valueOf(c.getString(1)) * 24 / 1000;
+
+
+//                goti pack
+                gotiHelper.cost += Double.valueOf(c.getString(1))*21/1000;
+
+
+//                nobanno pack
+                if(isPeakHour("22:00","08:00",c.getString(2)))
+                    nobannoHelper.cost += Double.valueOf(c.getString(1))*8/1000;
+                else
+                    nobannoHelper.cost += Double.valueOf(c.getString(1))*21/1000;
+
+
+//                shorol pack
+                if ((c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') && sfnf) {
+                    shorolHelper.superFnf = c.getString(0);
+                    shorolHelper.cost += Double.valueOf(c.getString(1)) * 6 / 1000;
+                    sfnf = false;
+                } else shorolHelper.cost += Double.valueOf(c.getString(1)) * 23 / 1000;
+
+
+//                noor pack
+                noorHelper.cost += Double.valueOf(c.getString(1))*21/1000;
+
+            }while (c.moveToNext());
+        }
     }
 
     public boolean isPeakHour(String start,String end,String time) {
@@ -57,205 +190,13 @@ public class RobiPackageAnalyser {
     public class Helper {
         String superFnf = "Not Applicable";
         ArrayList<String> fnf = new ArrayList<String>();
-        Double cost = 0.0;
         String packageName = "";
-    }
+        double cost = 0;
+        int counter = 0;
 
-    public void megaFnF() {
-
-        Helper helper = new Helper();
-        cost = 0;
-        counter = 0;
-        c = db.oneSecondPulse();
-
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-
-            do {
-//                total 81 fnf & 0 super fnf
-                if (counter < 80) {
-
-                    helper.fnf.add(c.getString(0));
-//                  if number is Robi or Airtel
-                    if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-
-//                    when call is creatd within  (12am to 4pm)
-                        if (isPeakHour("00:00","16:00",c.getString(2))) {
-                            cost += Double.valueOf(c.getString(1)) * 0.8 / 100;
-                        } else
-                            cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
-                    } else {
-                        cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
-                    }
-                    counter++;
-                }
-
-//                when number is not in FnF list
-                else if (isPeakHour("00:00","16:00",c.getString(2))) {
-                    cost += Double.valueOf(c.getString(1)) * 2.55 / 100;
-                } else
-                    cost += Double.valueOf(c.getString(1)) * 2.60 / 100;
-            }
-            while (c.moveToNext());
-        }
-        System.out.println("robi MegaFNF = " + cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Mega FnF";
-            helper.cost = cost;
-            final_helper = helper;
-        }
-    }
-
-    public void hutHutChomok32() {
-
-        Helper helper = new Helper();
-        int selfFnf = 0; // 3 robi/airtel fnf
-        int otherFnf = 0; // 2 fnf to other number
-        c = db.tenSecondPulse();
-        cost = 0;
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-            do {
-//                when fnf is robi/airtel
-                if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                    if (selfFnf < 4)
-                        helper.fnf.add(c.getString(0));
-                    cost += Double.valueOf(c.getString(1)) * 13 / 1000;
-                    selfFnf++;
-                } else if ((c.getString(0).charAt(2) != '8' || c.getString(0).charAt(2) != '6') && otherFnf < 3) {
-                    helper.fnf.add(c.getString(0));
-                    cost += Double.valueOf(c.getString(1)) * 13 / 1000;
-                    otherFnf++;
-                } else {
-                    cost += Double.valueOf(c.getString(1)) * 22 / 1000;
-                }
-            } while (c.moveToNext());
-        }
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Hoot Hut Chomok";
-            helper.cost = cost;
-            final_helper = helper;
-        }
-        System.out.println(cost);
-    }
-
-    public void robiClub34() {
-        Helper helper = new Helper();
-        c = db.tenSecondPulse();
-        cost = 0;
-
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-            do {
-                if ((c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') && isPeakHour("00:00","16:00",c.getString(2))) {
-                    cost += Double.valueOf(c.getString(1)) * 13 / 1000;
-                } else
-                    cost += Double.valueOf(c.getString(1)) * 24 / 1000;
-            } while (c.moveToNext());
-        }
-
-        System.out.println("robi club34 " + cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Robi Club";
-            helper.fnf.add("Not Applicable");
-            helper.cost = cost;
-            final_helper = helper;
-        }
-    }
-
-    public void goti36(){
-        Helper helper = new Helper();
-        c = db.tenSecondPulse();
-        cost = 0;
-        if(c.getCount()>0){
-            c.moveToFirst();
-            do {
-                cost += Double.valueOf(c.getString(1))*21/1000;
-            } while (c.moveToNext());
-        }
-
-        System.out.println("Goti 36 "+cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Goti";
-            helper.fnf.add("Not Applicable");
-            helper.cost = cost;
-            final_helper = helper;
-        }
-    }
-
-    public void nobanno37(){
-        Helper helper = new Helper();
-//        no need to call db.tenSecondPulse as it is already in c
-        cost = 0;
-
-        if(c.getCount()>0){
-            c.moveToFirst();
-            do {
-                if(isPeakHour("22:00","08:00",c.getString(2)))
-                    cost += Double.valueOf(c.getString(1))*8/1000;
-                else
-                    cost += Double.valueOf(c.getString(1))*21/1000;
-            }while (c.moveToNext());
-        }
-
-        System.out.println("Nobanno " + cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Nobanno";
-            helper.fnf.add("Not Applicable");
-            helper.cost = cost;
-            final_helper = helper;
-        }
-    }
-
-    public void shorol39(){
-//        1 super FnF/Priyo number
-        Helper helper = new Helper();
-        cost = 0;
-        int sfnf = 0;
-
-        if(c.getCount()>0){
-            c.moveToFirst();
-            do {
-                if ((c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') && sfnf<1) {
-                    helper.superFnf = c.getString(0);
-                    cost += Double.valueOf(c.getString(1)) * 6 / 1000;
-                    sfnf++;
-                } else cost += Double.valueOf(c.getString(1)) * 23 / 1000;
-            }while (c.moveToNext());
-        }
-
-        System.out.println("Shorol "+cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Shorol";
-            helper.fnf.add("Not Applicable");
-            helper.cost = cost;
-            final_helper = helper;
-        }
-    }
-
-    public void noor(){
-        Helper helper = new Helper();
-        cost = 0;
-        if(c.getCount()>0){
-            c.moveToFirst();
-            do {
-                cost += Double.valueOf(c.getString(1))*21/1000;
-            } while (c.moveToNext());
-        }
-
-        System.out.println("Noor "+ cost);
-        if(cost<min){
-            min = cost;
-            helper.packageName = "Mega FnF";
-            helper.fnf.add("Not Applicable");
-            helper.cost = cost;
-            final_helper = helper;
+        public Helper(String packageName) {
+            this.packageName = packageName;
+            this.fnf.add("Not Applicable");
         }
     }
 }
