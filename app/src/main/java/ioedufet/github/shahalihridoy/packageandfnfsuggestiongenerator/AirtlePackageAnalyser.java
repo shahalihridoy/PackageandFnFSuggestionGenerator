@@ -98,6 +98,7 @@ public class AirtlePackageAnalyser {
                         addaHelper.cost += Double.valueOf(c.getString(1)) * 13.333 / 1000;
                         addaHelper.fnf.add(c.getString(0));
                     }
+                    addaHelper.counter++;
                 } else {
                     addaHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
@@ -111,6 +112,7 @@ public class AirtlePackageAnalyser {
                         superAddaHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
                         superAddaHelper.fnf.add(c.getString(0));
                     }
+                    superAddaHelper.counter++;
                 } else {
                     superAddaHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
@@ -124,6 +126,7 @@ public class AirtlePackageAnalyser {
                         dostiHelper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
                         dostiHelper.fnf.add(c.getString(0));
                     }
+                    dostiHelper.counter++;
                 } else {
                     dostiHelper.cost += Double.valueOf(c.getString(1)) * 22.5 / 1000;
                 }
@@ -157,6 +160,7 @@ public class AirtlePackageAnalyser {
                         hoichoiHelper.cost += Double.valueOf(c.getString(1)) * 1 / 100;
                         hoichoiHelper.fnf.add(c.getString(0));
                     }
+                    hoichoiHelper.counter++;
                 } else hoichoiHelper.cost += Double.valueOf(c.getString(1)) * 1.667 / 100;
 
 //                kotha pack

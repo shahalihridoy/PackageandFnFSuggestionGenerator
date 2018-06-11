@@ -103,10 +103,13 @@ public class BackgroundServiceMarshmallow extends JobService {
 //    this function will start the service for nougat or onward version
     public void startBackgroundService(){
         ComponentName componentName = new ComponentName(context, BackgroundServiceMarshmallow.class);
-        @SuppressLint({"NewApi", "LocalSuppress"}) JobInfo info = new JobInfo.Builder(123, componentName)
-                .addTriggerContentUri(new JobInfo.TriggerContentUri(CallLog.Calls.CONTENT_URI
-                        , JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
-                .build();
+        JobInfo info = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            info = new JobInfo.Builder(123, componentName)
+                    .addTriggerContentUri(new JobInfo.TriggerContentUri(CallLog.Calls.CONTENT_URI
+                            , JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
+                    .build();
+        }
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         int resultCode = scheduler.schedule(info);

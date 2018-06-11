@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 public class BanglalinkPackageAnalyser {
     Database db;
@@ -75,14 +74,14 @@ public class BanglalinkPackageAnalyser {
                     playHelper.cost += Double.valueOf(c.getString(1)) * 0.55 / 100;
                     playHelper.superFnf = c.getString(0);
                     playHelper.sfnf = false;
-                } else if (playHelper.otherfnf < 18) {
+                } else if (playHelper.counter < 18) {
                     if (c.getString(0).charAt(2) == '9') {
                         playHelper.cost += Double.valueOf(c.getString(1)) * 1.1 / 100;
                         playHelper.fnf.add(c.getString(0));
                     } else {
                         playHelper.fnf.add(c.getString(0));
                     }
-                    playHelper.otherfnf++;
+                    playHelper.counter++;
 //                    other fnf is 10 second pulse
 //                    calculate cost with other loop
 
@@ -115,10 +114,11 @@ public class BanglalinkPackageAnalyser {
                     if (isPeakHour("00:00", "16:00", c.getString(2)))
                         desh10Helper.cost += Double.valueOf(c.getString(1)) * 6 / 1000;
                     else desh10Helper.cost += Double.valueOf(c.getString(1)) * 7 / 1000;
-                } else if (desh10Helper.otherfnf < 9) {
+                } else if (desh10Helper.counter < 9) {
                     if (isPeakHour("00:00", "16:00", c.getString(2)))
                         desh10Helper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
                     else desh10Helper.cost += Double.valueOf(c.getString(1)) * 15 / 1000;
+                    desh10Helper.counter++;
                 } else if (c.getString(0).charAt(2) == '9')
                     desh10Helper.cost += Double.valueOf(c.getString(1)) * 27 / 1000;
                 else desh10Helper.cost += Double.valueOf(c.getString(1)) * 28.67 / 1000;
@@ -160,7 +160,7 @@ public class BanglalinkPackageAnalyser {
         String packageName = "";
         double cost = 0;
         boolean sfnf = true;
-        int otherfnf = 0;
+        int counter = 0;
 
         public Helper(String packageName) {
             this.packageName = packageName;
