@@ -79,7 +79,7 @@ public class GrameenPhonePackageAnalyzer {
 
 //                djuice pack
  //                10 fnf to any number
-                if (counter < 11) {
+                if (djuiceHelper.counter < 10) {
 //                    adding number to fnf list
                     djuiceHelper.fnf.add(c.getString(0));
                     djuiceHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka

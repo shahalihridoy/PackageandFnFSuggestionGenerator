@@ -130,6 +130,9 @@ public class BanglalinkPackageAnalyser {
                 if (c.getString(0).charAt(2) == '9' && helloHelper.sfnf){
                     helloHelper.superFnf = c.getString(0);
                     helloHelper.cost += Double.valueOf(c.getString(1)) * 5.5 / 1000;
+                    helloHelper.sfnf = false;
+                } else if(c.getString(0).charAt(2) == '9'){
+                    helloHelper.cost += Double.valueOf(c.getString(1)) * 23 / 1000;
                 } else helloHelper.cost += Double.valueOf(c.getString(1)) * 12 / 1000;
 
             }while (c.moveToNext());

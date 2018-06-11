@@ -47,9 +47,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 //        service for Nougat or onward version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
-            backgroundServiceMarshmallow.startBackgroundService();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
+//            backgroundServiceMarshmallow.startBackgroundService();
 
             //        get required data
             if (checkPermission()) {
@@ -58,7 +58,9 @@ public class MainActivity extends Activity {
 
         } else {
             startService(new Intent(this, CallListenerService.class));
-            getData();
+            if (checkPermission()) {
+                getData();
+            }
         }
 
 //        creating database
@@ -170,7 +172,7 @@ public class MainActivity extends Activity {
                 String operaotr = getOperator();
 //                BanglalinkPackageAnalyser.Helper helper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
 //                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
-//                GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
+//                GrameenPhonePackageAnalyzer.Helper helper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
 //                AirtlePackageAnalyser.Helper helper = new AirtlePackageAnalyser(getApplicationContext()).analyseAirtel();
                 PackageAnalyser.Helper helper = new PackageAnalyser(getApplicationContext()).analysePackage();
                 packageName.setText(helper.packageName);
