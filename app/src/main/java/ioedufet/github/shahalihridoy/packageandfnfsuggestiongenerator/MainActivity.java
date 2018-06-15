@@ -166,35 +166,38 @@ public class MainActivity extends Activity {
         dialog.setCancelable(false);
         dialog.show();
 
-        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                String operaotr = getOperator();
-//                BanglalinkPackageAnalyser.Helper helper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
-//                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
-//                GrameenPhonePackageAnalyzer.Helper helper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
-//                AirtlePackageAnalyser.Helper helper = new AirtlePackageAnalyser(getApplicationContext()).analyseAirtel();
-                PackageAnalyser.Helper helper = new PackageAnalyser(getApplicationContext()).analysePackage();
-                packageName.setText(helper.packageName);
-                superfnf.setText(helper.superFnf);
-                adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list, R.id.list_text, helper.fnf);
-                fnfList.setAdapter(adapter);
-
-
-//                switch (operaotr.toUpperCase().charAt(0)){
-//                    case 'G':
-//                        GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();
-//                        packageName.setText(helper.packageName);
-//                        superfnf.setText(helper.superFnf);
-//                        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
-//                        fnfList.setAdapter(adapter);
-//                    break;
-//                    case 'R': getData();
-//                }
-
-                dialog.dismiss();
-            }
-        };
+        final CustomHandler handler = new CustomHandler(this,dialog,packageName,superfnf,fnfList);
+        handler.mainActivity = this;
+//        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                String operaotr = getOperator();
+////                BanglalinkPackageAnalyser.Helper helper = new BanglalinkPackageAnalyser(getApplicationContext()).analyseBanglalink();
+////                RobiPackageAnalyser.Helper helper = new RobiPackageAnalyser(getApplicationContext()).analyzeRobi();
+////                GrameenPhonePackageAnalyzer.Helper helper = new GrameenPhonePackageAnalyzer(getApplicationContext()).analyzeGP();
+////                AirtlePackageAnalyser.Helper helper = new AirtlePackageAnalyser(getApplicationContext()).analyseAirtel();
+//                PackageAnalyser.Helper helper = new PackageAnalyser(getApplicationContext()).analysePackage();
+//                packageName.setText(helper.packageName);
+//                superfnf.setText(helper.superFnf);
+//
+//                adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list, R.id.list_text, helper.fnf);
+//                fnfList.setAdapter(adapter);
+//
+//
+////                switch (operaotr.toUpperCase().charAt(0)){
+////                    case 'G':
+////                        GrameenPhonePackageAnalyzer.Helper helper= pkg.analyzeGP();
+////                        packageName.setText(helper.packageName);
+////                        superfnf.setText(helper.superFnf);
+////                        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list,R.id.list_text,helper.fnf);
+////                        fnfList.setAdapter(adapter);
+////                    break;
+////                    case 'R': getData();
+////                }
+//
+//                dialog.dismiss();
+//            }
+//        };
 
         new Thread() {
             @Override

@@ -17,12 +17,18 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class PhoneListener extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
                 TelephonyManager.EXTRA_STATE_IDLE)) {
 

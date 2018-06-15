@@ -90,8 +90,6 @@ public class GrameenPhonePackageAnalyzer {
                     else
                         djuiceHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 27.5; //taka
                 }
-
-
             } while (c.moveToNext());
         }
 

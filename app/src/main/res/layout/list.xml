@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/list_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <TextView
-        android:id="@+id/list_text"
-        android:layout_width="match_parent"
+        android:id="@+id/no"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:text="01992057252"
+        android:gravity="center"
         android:textColor="@color/cardview_dark_background"
         android:textSize="20sp" />
+    <TextView
+        android:id="@+id/list_text"
+        android:layout_toRightOf="@id/no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="20sp" />
+    <Button
+        android:id="@+id/addFnF"
+        android:text="Add FnF"
+        android:textColor="@color/cardview_dark_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_text"
+        />
 </LinearLayout>
