@@ -12,22 +12,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_gravity="center"
         android:textColor="@color/cardview_dark_background"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_weight="1"/>
     <TextView
         android:id="@+id/list_text"
         android:layout_toRightOf="@id/no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_gravity="center"
         android:textColor="@color/cardview_dark_background"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_weight="1"/>
     <Button
         android:id="@+id/addFnF"
-        android:text="Add FnF"
-        android:textColor="@color/cardview_dark_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/list_text"
+        android:text="Add FnF"
+        android:textColor="@color/cardview_dark_background"
+        android:background="@drawable/rectangle_button"
+        android:layout_gravity="right"
+        android:layout_weight="1"
+        android:layout_marginRight="5dp"
         />
 </LinearLayout>
