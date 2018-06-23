@@ -144,6 +144,7 @@ public class AirtlePackageAnalyser {
 
             } while (c.moveToNext());
         }
+        db.close();
     }
 
     public void oneSecondPulsePackageAnalysis() {
@@ -170,6 +171,7 @@ public class AirtlePackageAnalyser {
 
             } while (c.moveToNext());
         }
+        db.close();
     }
 
     public boolean isPeakHour(String start, String end, String time) {

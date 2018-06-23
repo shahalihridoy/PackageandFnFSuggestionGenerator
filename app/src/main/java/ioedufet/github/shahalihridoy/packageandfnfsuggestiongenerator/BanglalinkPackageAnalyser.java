@@ -90,6 +90,7 @@ public class BanglalinkPackageAnalyser {
 
             }while (c.moveToNext());
         }
+        db.close();
     }
 
     public void analyseTenSecondPulse(){
@@ -137,6 +138,7 @@ public class BanglalinkPackageAnalyser {
 
             }while (c.moveToNext());
         }
+        db.close();
     }
 
     public boolean isPeakHour(String start, String end, String time) {

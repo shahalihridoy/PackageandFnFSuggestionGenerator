@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -202,7 +203,9 @@ public class MainActivity extends Activity {
         new Thread() {
             @Override
             public void run() {
+//                send this thread to stop it after the work is finished
                 dataLoader.insertCallListToDatabase();
+//                dataLoader.fakeCallLog();
                 handler.sendEmptyMessage(0);
                 this.interrupt();
             }

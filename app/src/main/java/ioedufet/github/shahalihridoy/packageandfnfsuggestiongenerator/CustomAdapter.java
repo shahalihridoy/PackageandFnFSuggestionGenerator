@@ -103,7 +103,7 @@ public class CustomAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -17,6 +17,7 @@ public class PackageAnalyser {
         RobiPackageAnalyser.Helper robihelper = new RobiPackageAnalyser(context).analyzeRobi();
         GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(context).analyzeGP();
         AirtlePackageAnalyser.Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAirtel();
+        TeletalkPackageAnalyser.Helper teletalkHelper = new TeletalkPackageAnalyser(context).analyseTeletalk();
 
         double min = 99999.0;
         if(min>robihelper.cost){
@@ -43,7 +44,12 @@ public class PackageAnalyser {
             helper.superFnf = airtelHelper.superFnf;
             helper.fnf = airtelHelper.fnf;
         }
-
+        if(min>teletalkHelper.cost){
+            min = teletalkHelper.cost;
+            helper.packageName = teletalkHelper.packageName;
+            helper.superFnf = teletalkHelper.superFnf;
+            helper.fnf = teletalkHelper.fnf;
+        }
         return helper;
     }
 
