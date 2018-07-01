@@ -35,7 +35,7 @@ public class RobiPackageAnalyser {
     }
 
     //    analyze overall Robi Package
-    public RobiPackageAnalyser.Helper analyzeRobi() {
+    public Helper analyzeRobi() {
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();
@@ -189,16 +189,4 @@ public class RobiPackageAnalyser {
         return false;
     }
 
-    public class Helper {
-        String superFnf = "Not Applicable";
-        ArrayList<String> fnf = new ArrayList<String>();
-        String packageName = "";
-        double cost = 0;
-        int counter = 0;
-
-        public Helper(String packageName) {
-            this.packageName = packageName;
-            this.fnf.add("Not Applicable");
-        }
-    }
 }

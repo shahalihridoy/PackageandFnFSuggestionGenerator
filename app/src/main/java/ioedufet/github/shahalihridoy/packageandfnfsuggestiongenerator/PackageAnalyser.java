@@ -13,11 +13,11 @@ public class PackageAnalyser {
 
     public Helper analysePackage(){
 
-        BanglalinkPackageAnalyser.Helper blhelper = new BanglalinkPackageAnalyser(context).analyseBanglalink();
-        RobiPackageAnalyser.Helper robihelper = new RobiPackageAnalyser(context).analyzeRobi();
-        GrameenPhonePackageAnalyzer.Helper gphelper = new GrameenPhonePackageAnalyzer(context).analyzeGP();
-        AirtlePackageAnalyser.Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAirtel();
-        TeletalkPackageAnalyser.Helper teletalkHelper = new TeletalkPackageAnalyser(context).analyseTeletalk();
+        Helper blhelper = new BanglalinkPackageAnalyser(context).analyseBanglalink();
+        Helper robihelper = new RobiPackageAnalyser(context).analyzeRobi();
+        Helper gphelper = new GrameenPhonePackageAnalyzer(context).analyzeGP();
+        Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAirtel();
+        Helper teletalkHelper = new TeletalkPackageAnalyser(context).analyseTeletalk();
 
         double min = 99999.0;
         if(min>robihelper.cost){
@@ -51,12 +51,5 @@ public class PackageAnalyser {
             helper.fnf = teletalkHelper.fnf;
         }
         return helper;
-    }
-
-    public class Helper {
-        String superFnf = "Not Applicable";
-        ArrayList<String> fnf = new ArrayList<String>();
-        Double cost = 0.0;
-        String packageName = "";
     }
 }

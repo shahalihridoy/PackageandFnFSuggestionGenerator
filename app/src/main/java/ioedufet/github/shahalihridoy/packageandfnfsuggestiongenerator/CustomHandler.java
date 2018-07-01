@@ -31,20 +31,13 @@ public class CustomHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
-                PackageAnalyser.Helper helper = new PackageAnalyser(context).analysePackage();
+                Helper helper = new PackageAnalyser(context).analysePackage();
                 packageName.setText(helper.packageName);
                 superfnf.setText(helper.superFnf);
 
-                int size = helper.fnf.size();
+                CustomAdapter adapter = new CustomAdapter(mainActivity,helper.fnf);
 
-                String[] fnf = new String[size];
-
-                for(int i=0;i<size;i++){
-                    fnf[i] = helper.fnf.get(i);
-                }
-                CustomAdapter adapter = new CustomAdapter(mainActivity,fnf);
-
-//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.list, R.id.list_text, helper.fnf);
+//                ArrayAdapter<String> adapters = new ArrayAdapter<String>(context, R.layout.list, R.id.list_text, helper.fnf);
                 fnfList.setAdapter(adapter);
 
                 dialog.dismiss();

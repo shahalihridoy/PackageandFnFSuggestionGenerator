@@ -46,7 +46,7 @@
                             android:gravity="center"
                             android:text="Call Rate"
                             android:layout_marginTop="10dp"
-                            android:textColor="@color/colorPrimaryDark"
+                            android:textColor="@color/primaryDarkColor"
                             android:background="@color/cardview_shadow_start_color"
                             android:textSize="25sp"
                             android:layout_marginRight="5dp"/>
@@ -81,7 +81,7 @@
                     android:background="@color/cardview_shadow_start_color"
                     android:gravity="center_horizontal"
                     android:text="Super FnF"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/primaryDarkColor"
                     android:textSize="25sp" />
 
                 <TextView
@@ -117,7 +117,7 @@
                     android:background="@color/cardview_shadow_start_color"
                     android:gravity="center_horizontal"
                     android:text="General FnF"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/primaryDarkColor"
                     android:textSize="25sp" />
 
                     <ListView

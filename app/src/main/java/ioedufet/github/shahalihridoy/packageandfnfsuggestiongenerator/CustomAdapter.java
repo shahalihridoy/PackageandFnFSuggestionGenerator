@@ -1,9 +1,18 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
+import android.Manifest;
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.Image;
+import android.net.Uri;
+import android.provider.Telephony;
 import android.service.autofill.AutofillService;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +31,14 @@ import java.util.concurrent.TimeUnit;
 public class CustomAdapter extends BaseAdapter {
 
     Context context;
-    String[] fnf;
-//    int[] sign;
+    MainActivity mainActivity;
+    List<String> fnf;
+    //    int[] sign;
     public static LayoutInflater inflater = null;
 
-    public CustomAdapter(MainActivity mainActivity,String[] fnf){
+    public CustomAdapter(MainActivity mainActivity, List<String> fnf) {
         this.context = mainActivity;
+        this.mainActivity = mainActivity;
         this.fnf = fnf;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -40,7 +51,7 @@ public class CustomAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return fnf.length;
+        return fnf.size();
     }
 
     /**
@@ -52,7 +63,7 @@ public class CustomAdapter extends BaseAdapter {
      */
     @Override
     public Object getItem(int position) {
-        return position;
+        return fnf.get(position);
     }
 
     /**
@@ -87,7 +98,7 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Helper helper = new Helper();
-        View view = inflater.inflate(R.layout.list,null);
+        View view = inflater.inflate(R.layout.list, null);
 
 //        helper.imageView = (ImageView) view.findViewById(R.id.list_image);
         helper.no = (TextView) view.findViewById(R.id.no);
@@ -95,19 +106,55 @@ public class CustomAdapter extends BaseAdapter {
         helper.addFnF = (Button) view.findViewById(R.id.addFnF);
 
 //        helper.imageView.setImageResource(sign[position]);
-        helper.no.setText(Integer.toString(position+1));
+        helper.no.setText(Integer.toString(position + 1));
         helper.no.append(".");
-        helper.textView.setText(fnf[position]);
+        helper.textView.setText(fnf.get(position));
 
         helper.addFnF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-                } catch (InterruptedException e) {
+//                    sending sms
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + 4444));
+                    intent.putExtra("sms_body", "P");
+                    mainActivity.startActivity(intent);
+
+
+//                    -----------------------------------------
+//                    reading sms
+//                    Cursor cursor = context.getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+//
+//                    if (cursor.moveToFirst()) { // must check the result to prevent exception
+//                        do {
+//                            String msgData = "";
+//                            for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+//                                msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+//                            }
+//                            System.out.println(msgData);
+//                        } while (cursor.moveToNext());
+//                    } else {
+//                        System.out.println("empty inbox");
+//                    }
+//
+////                    running ussd code
+//                    String ussdCode = "*123"+Uri.encode("#");
+//                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                        return;
+//                    }
+//                    mainActivity.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+
+
+//                    ------------------
+
+//                    SmsManager smsManager = SmsManager.getDefault();
+//                    smsManager.sendTextMessage("01521208815", null, "walllaa", null, null);
+//                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("you clicked on "+fnf[position]);
+                System.out.println("you clicked on "+fnf.get(position));
             }
         });
 

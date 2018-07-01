@@ -34,6 +34,9 @@ public class MainActivity extends Activity {
     Dialog dialog;
     String[] permission = new String[]{
             Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.RECEIVE_BOOT_COMPLETED
     };
@@ -46,6 +49,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        System.out.println(getOperator());
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -92,6 +97,9 @@ public class MainActivity extends Activity {
 
                 // Initialize the map with both permissions
                 perms.put(Manifest.permission.READ_CALL_LOG, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.RECEIVE_SMS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.RECEIVE_BOOT_COMPLETED, PackageManager.PERMISSION_GRANTED);
 
@@ -101,13 +109,19 @@ public class MainActivity extends Activity {
                         perms.put(permissions[i], grantResults[i]);
                     // Check for both permissions
                     if (perms.get(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.RECEIVE_BOOT_COMPLETED) == PackageManager.PERMISSION_GRANTED) {
                         getData();
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALL_LOG)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)
                                 ) {
                             showDialogOK("Permission is required for this app",
                                     new DialogInterface.OnClickListener() {
@@ -199,7 +213,6 @@ public class MainActivity extends Activity {
 //                dialog.dismiss();
 //            }
 //        };
-
         new Thread() {
             @Override
             public void run() {

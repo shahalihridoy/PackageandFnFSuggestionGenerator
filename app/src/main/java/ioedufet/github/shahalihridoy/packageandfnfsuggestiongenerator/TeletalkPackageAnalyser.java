@@ -33,31 +33,21 @@ public class TeletalkPackageAnalyser {
         analyseOneSecondPulse();
         analyseTenSecondPulse();
 
-        if(min>projonmoHelper.cost){
+        if (min > projonmoHelper.cost) {
             min = projonmoHelper.cost;
             final_helper = projonmoHelper;
-            System.out.println(projonmoHelper.packageName+": "+projonmoHelper.cost);
+            System.out.println(projonmoHelper.packageName + ": " + projonmoHelper.cost);
         }
-        if(min>youthHelper.cost){
+        if (min > youthHelper.cost) {
             min = youthHelper.cost;
             final_helper = youthHelper;
-            System.out.println(youthHelper.packageName+": "+youthHelper.cost);
+            System.out.println(youthHelper.packageName + ": " + youthHelper.cost);
         }
-        if(min>shadheenHelper.cost){
+        if (min > shadheenHelper.cost) {
             min = shadheenHelper.cost;
             final_helper = shadheenHelper;
-            System.out.println(shadheenHelper.packageName+": "+shadheenHelper.cost);
+            System.out.println(shadheenHelper.packageName + ": " + shadheenHelper.cost);
         }
-//        if(min>helloHelper.cost){
-//            min = helloHelper.cost;
-//            final_helper = helloHelper;
-//            System.out.println(helloHelper.packageName+": "+helloHelper.cost);
-//        }
-
-//        play();
-//        desh10fnf();
-//        deshEkRateDarun();
-//        hello();
         return final_helper;
     }
 
@@ -71,22 +61,22 @@ public class TeletalkPackageAnalyser {
             do {
 
 //                youth pack
-                if(youthHelper.counter<3){
+                if (youthHelper.counter < 3) {
                     youthHelper.fnf.add(c.getString(0));
                     youthHelper.counter++;
-                    if(c.getString(0).charAt(2) == '5'){
-                        youthHelper.cost += Double.valueOf(c.getString(1))*0.5/100;
-                    } else youthHelper.cost += Double.valueOf(c.getString(1))*1/100;
-                } else if(c.getString(0).charAt(2) == '5'){
-                    if(isPeakHour("08:00","12:00",c.getString(2)))
-                        youthHelper.cost += Double.valueOf(c.getString(1))*1/100;
-                    else youthHelper.cost += Double.valueOf(c.getString(1))*0.5/100;
-                } else youthHelper.cost += Double.valueOf(c.getString(1))*1.5/100;
+                    if (c.getString(0).charAt(2) == '5') {
+                        youthHelper.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
+                    } else youthHelper.cost += Double.valueOf(c.getString(1)) * 1 / 100;
+                } else if (c.getString(0).charAt(2) == '5') {
+                    if (isPeakHour("08:00", "12:00", c.getString(2)))
+                        youthHelper.cost += Double.valueOf(c.getString(1)) * 1 / 100;
+                    else youthHelper.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
+                } else youthHelper.cost += Double.valueOf(c.getString(1)) * 1.5 / 100;
 
-        } while (c.moveToNext()) ;
-    }
+            } while (c.moveToNext());
+        }
         db.close();
-}
+    }
 
     public void analyseTenSecondPulse() {
         c = db.tenSecondPulse();
@@ -97,32 +87,32 @@ public class TeletalkPackageAnalyser {
             do {
 
 //                projonmo pack
-                if(projonmoHelper.sfnf){
+                if (projonmoHelper.sfnf) {
                     projonmoHelper.superFnf = c.getString(0);
-                    projonmoHelper.cost += Double.valueOf(c.getString(1))*4.17/1000;
+                    projonmoHelper.cost += Double.valueOf(c.getString(1)) * 4.17 / 1000;
                     projonmoHelper.sfnf = false;
-                } else if(c.getString(0).charAt(2) == '5'){
-                    if(isPeakHour("08:00","12:00",c.getString(2))){
-                        projonmoHelper.cost += Double.valueOf(c.getString(1))*10/1000;
-                    } else projonmoHelper.cost += Double.valueOf(c.getString(1))*5/1000;
-                } else projonmoHelper.cost += Double.valueOf(c.getString(1))*16/1000;
+                } else if (c.getString(0).charAt(2) == '5') {
+                    if (isPeakHour("08:00", "12:00", c.getString(2))) {
+                        projonmoHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
+                    } else projonmoHelper.cost += Double.valueOf(c.getString(1)) * 5 / 1000;
+                } else projonmoHelper.cost += Double.valueOf(c.getString(1)) * 16 / 1000;
 
 
 //                shadheen pack
-                if(shadheenHelper.counter<9){
+                if (shadheenHelper.counter < 9) {
                     shadheenHelper.fnf.add(c.getString(0));
                     shadheenHelper.counter++;
                     if (c.getString(0).charAt(2) == '5')
-                    shadheenHelper.cost += Double.valueOf(c.getString(1))*4.17/1000;
-                    else shadheenHelper.cost += Double.valueOf(c.getString(1))*10/1000;
-                } else if(c.getString(0).charAt(2) == '5'){
-                    if(isPeakHour("08:00","12:00",c.getString(2)))
-                        shadheenHelper.cost += Double.valueOf(c.getString(1))*10/1000;
-                    else shadheenHelper.cost += Double.valueOf(c.getString(1))*5/1000;
+                        shadheenHelper.cost += Double.valueOf(c.getString(1)) * 4.17 / 1000;
+                    else shadheenHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
+                } else if (c.getString(0).charAt(2) == '5') {
+                    if (isPeakHour("08:00", "12:00", c.getString(2)))
+                        shadheenHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
+                    else shadheenHelper.cost += Double.valueOf(c.getString(1)) * 5 / 1000;
                 } else {
-                    if(isPeakHour("08:00","12:00",c.getString(2)))
-                        shadheenHelper.cost += Double.valueOf(c.getString(1))*15/1000;
-                    else shadheenHelper.cost += Double.valueOf(c.getString(1))*10/1000;
+                    if (isPeakHour("08:00", "12:00", c.getString(2)))
+                        shadheenHelper.cost += Double.valueOf(c.getString(1)) * 15 / 1000;
+                    else shadheenHelper.cost += Double.valueOf(c.getString(1)) * 10 / 1000;
                 }
 
             } while (c.moveToNext());
@@ -147,18 +137,4 @@ public class TeletalkPackageAnalyser {
 
         return false;
     }
-
-public class Helper {
-    String superFnf = "Not Applicable";
-    ArrayList<String> fnf = new ArrayList<String>();
-    String packageName = "";
-    double cost = 0;
-    boolean sfnf = true;
-    int counter = 0;
-
-    public Helper(String packageName) {
-        this.packageName = packageName;
-        fnf.add("Not Applicable");
-    }
-}
 }

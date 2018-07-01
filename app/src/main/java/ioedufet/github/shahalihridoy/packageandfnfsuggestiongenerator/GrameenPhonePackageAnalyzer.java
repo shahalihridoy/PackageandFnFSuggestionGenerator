@@ -116,15 +116,4 @@ public class GrameenPhonePackageAnalyzer {
         }
     }
 
-    public class Helper {
-        String superFnf = "Not Applicable";
-        ArrayList<String> fnf = new ArrayList<String>();
-        String packageName = "";
-        double cost = 0;
-        int counter = 0;
-
-        public Helper(String packageName) {
-            this.packageName = packageName;
-        }
-    }
 }

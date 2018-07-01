@@ -110,7 +110,7 @@ public class DataLoader extends Activity {
 
 //        insertPlaceholderCall(context,context.getContentResolver(),"01763413041","3000",1545765415102L,2);
 
-        for(int i=0;i<15;i++){
+        for(int i=0;i<50;i++){
             fakeDate.delete(0,fakeDate.length());
             fakeDate.append("1445"+Integer.toString(random.nextInt(899999999)+100000000));
             opNo = random.nextInt(4);

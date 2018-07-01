@@ -55,10 +55,6 @@ public class BanglalinkPackageAnalyser {
             System.out.println(helloHelper.packageName+": "+helloHelper.cost);
         }
 
-//        play();
-//        desh10fnf();
-//        deshEkRateDarun();
-//        hello();
         return final_helper;
     }
 
@@ -82,9 +78,6 @@ public class BanglalinkPackageAnalyser {
                         playHelper.fnf.add(c.getString(0));
                     }
                     playHelper.counter++;
-//                    other fnf is 10 second pulse
-//                    calculate cost with other loop
-
 
                 }
 
@@ -157,19 +150,5 @@ public class BanglalinkPackageAnalyser {
         }
 
         return false;
-    }
-
-    public class Helper {
-        String superFnf = "Not Applicable";
-        ArrayList<String> fnf = new ArrayList<String>();
-        String packageName = "";
-        double cost = 0;
-        boolean sfnf = true;
-        int counter = 0;
-
-        public Helper(String packageName) {
-            this.packageName = packageName;
-            fnf.add("Not Applicable");
-        }
     }
 }
