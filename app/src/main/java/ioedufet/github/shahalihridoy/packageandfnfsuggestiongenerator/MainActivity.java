@@ -11,27 +11,31 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     Database db;
     Cursor c;
     AlertDialog.Builder builder;
     Dialog dialog;
+    ViewPagerAdapter vpa;
     String[] permission = new String[]{
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.SEND_SMS,
@@ -44,13 +48,37 @@ public class MainActivity extends Activity {
     List<String> listPermissionsNeeded = new ArrayList<>();
     GrameenPhonePackageAnalyzer pkg = new GrameenPhonePackageAnalyzer(this);
     DataLoader dataLoader = new DataLoader(this, this);
+    TextView packageName;
+    TextView superfnf;
+    ListView fnfList;
+    ArrayAdapter<String> adapter;
 
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPager viewPager;
+
+// get Data from call_history
+
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = findViewById(R.id.toolbar);
+        tabLayout = findViewById(R.id.tab);
+        viewPager = findViewById(R.id.viewPager);
+
+        vpa = new ViewPagerAdapter(getSupportFragmentManager());
+        vpa.addFragment(new BestPackage(),"Best Package");
+        vpa.addFragment(new FnF(),"FnF List");
+        vpa.addFragment(new BestOperator(),"Best Operator");
+
+        viewPager.setAdapter(vpa);
+        tabLayout.setupWithViewPager(viewPager);
+
         System.out.println(getOperator());
+
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -160,14 +188,6 @@ public class MainActivity extends Activity {
                 .show();
     }
 
-
-// get Data from call_history
-
-    TextView packageName;
-    TextView superfnf;
-    ListView fnfList;
-    ArrayAdapter<String> adapter;
-
     private void getData() {
         packageName = (TextView) findViewById(R.id.package_name);
         superfnf = (TextView) findViewById(R.id.super_fnf);
@@ -181,7 +201,7 @@ public class MainActivity extends Activity {
         dialog.setCancelable(false);
         dialog.show();
 
-        final CustomHandler handler = new CustomHandler(this,dialog,packageName,superfnf,fnfList);
+        final CustomHandler handler = new CustomHandler(this, dialog, packageName, superfnf, fnfList);
         handler.mainActivity = this;
 //        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
 //            @Override
