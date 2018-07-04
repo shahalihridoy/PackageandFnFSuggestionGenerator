@@ -2,7 +2,6 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,17 +10,16 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,9 +31,25 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     Database db;
     Cursor c;
+    String operator;
+
     AlertDialog.Builder builder;
     Dialog dialog;
+
+    protected static Helper bestPackage = new Helper();
+    protected static Helper bestOperator = new Helper();
+
+    List<String> listPermissionsNeeded = new ArrayList<>();
+    DataLoader dataLoader = new DataLoader(this, this);
+
+    TextView packageName;
+    TextView superfnf;
+    ListView fnfList;
+
+    TabLayout tabLayout;
+    ViewPager viewPager;
     ViewPagerAdapter vpa;
+
     String[] permission = new String[]{
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.SEND_SMS,
@@ -45,18 +59,6 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.RECEIVE_BOOT_COMPLETED
     };
 
-    List<String> listPermissionsNeeded = new ArrayList<>();
-    GrameenPhonePackageAnalyzer pkg = new GrameenPhonePackageAnalyzer(this);
-    DataLoader dataLoader = new DataLoader(this, this);
-    TextView packageName;
-    TextView superfnf;
-    ListView fnfList;
-    ArrayAdapter<String> adapter;
-
-    Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-
 // get Data from call_history
 
     @SuppressLint("NewApi")
@@ -64,21 +66,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        toolbar = findViewById(R.id.toolbar);
-        tabLayout = findViewById(R.id.tab);
-        viewPager = findViewById(R.id.viewPager);
-
-        vpa = new ViewPagerAdapter(getSupportFragmentManager());
-        vpa.addFragment(new BestPackage(),"Best Package");
-        vpa.addFragment(new FnF(),"FnF List");
-        vpa.addFragment(new BestOperator(),"Best Operator");
-
-        viewPager.setAdapter(vpa);
-        tabLayout.setupWithViewPager(viewPager);
-
-        System.out.println(getOperator());
-
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -189,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getData() {
+
         packageName = (TextView) findViewById(R.id.package_name);
         superfnf = (TextView) findViewById(R.id.super_fnf);
         fnfList = (ListView) findViewById(R.id.fnf_list);
-        adapter = new ArrayAdapter<String>(this, 0);
 
         //        showing loading loaderHandler on create
         builder = new AlertDialog.Builder(MainActivity.this);
@@ -201,8 +188,17 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
 
-        final CustomHandler handler = new CustomHandler(this, dialog, packageName, superfnf, fnfList);
-        handler.mainActivity = this;
+//        final CustomHandler handler = new CustomHandler(this, dialog, packageName, superfnf, fnfList);
+//        handler.mainActivity = this;
+
+        final Handler handler1 = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                setData();
+                dialog.dismiss();
+            }
+        };
+
 //        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
 //            @Override
 //            public void handleMessage(Message msg) {
@@ -233,17 +229,76 @@ public class MainActivity extends AppCompatActivity {
 //                dialog.dismiss();
 //            }
 //        };
-        new Thread() {
+        Thread t = new Thread() {
             @Override
             public void run() {
 //                send this thread to stop it after the work is finished
                 dataLoader.insertCallListToDatabase();
+                analyseData();
 //                dataLoader.fakeCallLog();
-                handler.sendEmptyMessage(0);
-                this.interrupt();
+                handler1.sendEmptyMessage(0);
             }
-        }.start();
+        };
 
+        t.start();
+//        let main thread wait untill t finishes
+
+//        synchronized (t){
+//            try {
+//                t.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+//        try {
+//            t.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+////        Main thread after waiting...........
+//        dialog.dismiss();
+//        setData();
+    }
+
+    private void analyseData() {
+
+        operator = getOperator();
+        bestOperator = new PackageAnalyser(MainActivity.this).analysePackage();
+
+        switch (operator.toUpperCase().charAt(0)) {
+            case 'A':
+                bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+                break;
+            case 'G':
+                bestPackage = new GrameenPhonePackageAnalyzer(MainActivity.this).analyzeGP();
+                break;
+            case 'R':
+                bestPackage = new RobiPackageAnalyser(MainActivity.this).analyzeRobi();
+                break;
+            case 'B':
+                bestPackage = new BanglalinkPackageAnalyser(MainActivity.this).analyseBanglalink();
+                break;
+            case 'T':
+                bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setData() {
+        tabLayout = findViewById(R.id.tab);
+        viewPager = findViewById(R.id.viewPager);
+
+        vpa = new ViewPagerAdapter(getSupportFragmentManager());
+        vpa.addFragment(new BestPackage(), "Best Package");
+        vpa.addFragment(new FnF(), "FnF List");
+        vpa.addFragment(new BestOperator(), "Best Operator");
+
+        viewPager.setAdapter(vpa);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     //    check operator name

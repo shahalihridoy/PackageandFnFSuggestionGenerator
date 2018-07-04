@@ -32,9 +32,9 @@ public class CustomHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
                 Helper helper = new PackageAnalyser(context).analysePackage();
+                MainActivity.bestOperator = helper;
                 packageName.setText(helper.packageName);
                 superfnf.setText(helper.superFnf);
-
                 CustomAdapter adapter = new CustomAdapter(mainActivity,helper.fnf);
 
 //                ArrayAdapter<String> adapters = new ArrayAdapter<String>(context, R.layout.list, R.id.list_text, helper.fnf);

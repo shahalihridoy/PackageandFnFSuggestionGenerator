@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 <item>
     <shape android:shape="oval">
-        <solid android:color="@color/primaryDarkColor"/>
+        <solid android:color="@color/primaryColor"/>
         <size android:height="20dp"/>
         <size android:width="20dp"/>
         <stroke android:width="1dp"/>
-        <stroke android:color="@color/secondaryDarkColor"/>
+        <stroke android:color="@color/secondaryLightColor"/>
     </shape>
 </item>
 </selector>

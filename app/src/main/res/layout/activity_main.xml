@@ -14,15 +14,21 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primaryDarkColor"
+            android:background="@color/primaryColor"
             app:title="@string/app_name"
             app:titleTextColor="@color/primaryTextColor"></android.support.v7.widget.Toolbar>
 
+
+        <!-- use tabMode="scrollable for more tabs -->
+        <!--app:tabIndicatorHeight="3dp"-->
         <android.support.design.widget.TabLayout
             android:id="@+id/tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primaryLightColor"
+            app:tabGravity="fill"
+            app:tabPaddingEnd="-1dp"
+            app:tabPaddingStart="-1dp"
             app:tabSelectedTextColor="@color/secondaryLightColor"
             app:tabTextColor="@color/primaryTextColor"></android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>

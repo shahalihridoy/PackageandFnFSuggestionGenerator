@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 /**
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
  */
 public class FnF extends Fragment {
 
+    TextView superfnf;
+    ListView fnfList;
 
     public FnF() {
         // Required empty public constructor
@@ -22,8 +26,14 @@ public class FnF extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fnf, container, false);
+        View view = inflater.inflate(R.layout.fragment_fnf, container, false);
+
+        superfnf = (TextView) view.findViewById(R.id.super_fnf);
+        fnfList = (ListView) view.findViewById(R.id.fnf_list);
+
+        superfnf.setText(MainActivity.bestPackage.superFnf);
+        fnfList.setAdapter(new CustomAdapter((MainActivity) getActivity(),MainActivity.bestPackage.fnf));
+        return view;
     }
 
 }
