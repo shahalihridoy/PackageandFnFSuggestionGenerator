@@ -38,13 +38,17 @@ public class GrameenPhonePackageAnalyzer {
     }
 
     public void analyseTenSecondPulse() {
-        nishchintoHelper.fnf.add("Not Applicable");
+
+        bondhuHelper.fnf.clear();
+        smileHelper.fnf.clear();
+        djuiceHelper.fnf.clear();
+
         c = db.tenSecondPulse();
         if (c.getCount() > 0) {
             c.moveToFirst();
             do {
-//                bondhu pack
 
+//                bondhu pack
 //                total 18 fnf including super fnf
                 if (bondhuHelper.counter < 19) {
                     if (c.getString(0).charAt(2) == '7' && count_super_fnf) {

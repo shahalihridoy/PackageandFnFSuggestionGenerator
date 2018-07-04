@@ -1,142 +1,72 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".BestPackage">
 
-    <!--  1st card for package-->
-    <android.support.v7.widget.CardView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="5dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Circle -->
+        <TextView
+            android:id="@+id/package_name"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circle_shape"
+            android:gravity="center"
+            android:text="Package Name"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="25sp" />
+
+        <!-- Activate -->
+        <Button
+            android:id="@+id/activate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rectangle_button"
+            android:paddingHorizontal="20dp"
+            android:text="+ Activate"
+            android:textAllCaps="false"
+            android:textSize="25sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/package_name"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/circle_shape"
-                    android:gravity="center"
-                    android:text="Package Name"
-                    android:textAlignment="center"
-                    android:textColor="@color/cardview_light_background"
-                    android:textSize="25sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/cardview_shadow_start_color"
-                    android:gravity="center"
-                    android:text="Call Rate"
-                    android:textColor="@color/primaryDarkColor"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="S-FnF: 5.5 p/10s\nFnF: 11.5 p/10s\nOther: 27 p/10s"
-                    android:textColor="@color/cardview_dark_background"
-                    android:textSize="20sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <!-- super fnf -->
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Package Details -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:text="Package Details: "
+            android:textSize="30sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/cardview_shadow_start_color"
-                android:gravity="center_horizontal"
-                android:text="Super FnF"
-                android:textColor="@color/primaryDarkColor"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/super_fnf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text=""
-                android:textColor="@color/cardview_dark_background"
-                android:textSize="20sp" />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-    <!-- Normal fnf-->
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/fnfDetails"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Super FnF: 1\nGeneral FnF: 18\nCurrent Package: Shobai Ek 1"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/testing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/cardview_shadow_start_color"
-                android:gravity="center_horizontal"
-                android:text="General FnF"
-                android:textColor="@color/primaryDarkColor"
-                android:textSize="25sp" />
-
-            <ListView
-                android:id="@+id/fnf_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"></ListView>
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+        <TextView
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="You could save xxx taka"
+            android:textSize="20sp" />
+    </LinearLayout>
+</ScrollView>

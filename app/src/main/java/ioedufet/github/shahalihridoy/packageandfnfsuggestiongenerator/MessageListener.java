@@ -16,6 +16,8 @@ public class MessageListener extends BroadcastReceiver {
                 for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
                     String messageBody = smsMessage.getMessageBody();
                     String number = smsMessage.getOriginatingAddress();
+                    MainActivity.from = number;
+                    MainActivity.msgbody = messageBody;
                     System.out.println(number+" : "+messageBody);
                 }
             } else {

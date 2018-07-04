@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,11 +28,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     Database db;
     Cursor c;
     String operator;
+
+    static String from = "";
+    static String msgbody;
+    String fnfFrom = "";
+    String fnfMsgbody;
+    static String currentPackage;
 
     AlertDialog.Builder builder;
     Dialog dialog;
@@ -241,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         t.start();
+
 //        let main thread wait untill t finishes
 
 //        synchronized (t){
@@ -269,19 +278,19 @@ public class MainActivity extends AppCompatActivity {
 
         switch (operator.toUpperCase().charAt(0)) {
             case 'A':
-                bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+                airtel();
                 break;
             case 'G':
-                bestPackage = new GrameenPhonePackageAnalyzer(MainActivity.this).analyzeGP();
+                gp();
                 break;
             case 'R':
-                bestPackage = new RobiPackageAnalyser(MainActivity.this).analyzeRobi();
+                robi();
                 break;
             case 'B':
-                bestPackage = new BanglalinkPackageAnalyser(MainActivity.this).analyseBanglalink();
+                banglalink();
                 break;
             case 'T':
-                bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
+                teletalk();
                 break;
             default:
                 break;
@@ -305,5 +314,176 @@ public class MainActivity extends AppCompatActivity {
     public String getOperator() {
         TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         return manager.getNetworkOperatorName();
+    }
+
+    void airtel() {
+
+//        analyse best package
+        bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+
+//        check package
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("8822", null, "P", null, null);
+
+        while (!from.equals("8822")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        currentPackage = msgbody.split(":")[0];
+        System.out.println("Main Activity");
+        System.out.println(from + " : " + msgbody);
+        System.out.println(currentPackage);
+        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+//            check fnf
+            smsManager.sendTextMessage("8363", null, "F", null, null);
+            while (!from.equals("8363")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(currentPackage);
+        }
+    }
+
+    void gp(){
+        //        analyse best package
+        bestPackage = new GrameenPhonePackageAnalyzer(MainActivity.this).analyzeGP();
+
+//        check package
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("4444", null, "P", null, null);
+
+        while (!from.equals("GP")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Main Activity");
+        System.out.println(from + " : " + msgbody);
+
+        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+            currentPackage = msgbody.split(":")[0];
+//            check fnf
+            smsManager.sendTextMessage("2888", null, "FF", null, null);
+            while (!from.equals("2888")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(msgbody);
+        }
+    }
+
+    void robi(){
+        //        analyse best package
+        bestPackage = new RobiPackageAnalyser(MainActivity.this).analyzeRobi();
+
+//        check package
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("8822", null, "P", null, null);
+
+        while (!from.equals("8822")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Main Activity");
+        System.out.println(from + " : " + msgbody);
+
+        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+            currentPackage = msgbody.split(":")[0];
+//            check fnf
+            smsManager.sendTextMessage("8363", null, "F", null, null);
+            while (!from.equals("8363")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(msgbody);
+        }
+    }
+
+    void teletalk(){
+        //        analyse best package
+        bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
+
+//        check package
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("154", null, "P", null, null);
+
+        while (!from.equals("154")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Main Activity");
+        System.out.println(from + " : " + msgbody);
+
+        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+            currentPackage = msgbody.split(":")[0];
+//            check fnf
+            smsManager.sendTextMessage("363", null, "see", null, null);
+            while (!from.equals("363")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(msgbody);
+        }
+    }
+
+    void banglalink(){
+        //        analyse best package
+        bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+
+//        check package
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("8822", null, "P", null, null);
+
+        while (!from.equals("8822")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Main Activity");
+        System.out.println(from + " : " + msgbody);
+
+        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+            currentPackage = msgbody.split(":")[0];
+//            check fnf
+            smsManager.sendTextMessage("8363", null, "F", null, null);
+            while (!from.equals("8363")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(msgbody);
+        }
     }
 }

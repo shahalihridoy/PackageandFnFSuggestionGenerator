@@ -15,8 +15,7 @@ import java.util.List;
 public class BestPackage extends Fragment {
 
     TextView packageName;
-    TextView superfnf;
-    ListView fnfList;
+    TextView currentPackage;
 
     public BestPackage(){}
 
@@ -27,12 +26,13 @@ public class BestPackage extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_best_package, container, false);
         packageName = (TextView) view.findViewById(R.id.package_name);
-        superfnf = (TextView) view.findViewById(R.id.super_fnf);
-        fnfList = (ListView) view.findViewById(R.id.fnf_list);
+        currentPackage = (TextView) view.findViewById(R.id.fnfDetails);
+
+        currentPackage.setText("Super FnF : "+(MainActivity.bestPackage.superFnf.charAt(0)=='N' ? "0" : MainActivity.bestPackage.superFnf)+"\n");
+        currentPackage.append("General FnF : "+MainActivity.bestPackage.fnf.size()+"\n");
+        currentPackage.append("Current Package : "+MainActivity.currentPackage);
 
         packageName.setText(MainActivity.bestPackage.packageName);
-        superfnf.setText(MainActivity.bestPackage.superFnf);
-        fnfList.setAdapter(new CustomAdapter((MainActivity) getActivity(),MainActivity.bestPackage.fnf));
         return view;
     }
 }
