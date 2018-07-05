@@ -43,6 +43,7 @@ public class GrameenPhonePackageAnalyzer {
         smileHelper.fnf.clear();
         djuiceHelper.fnf.clear();
 
+
         c = db.tenSecondPulse();
         if (c.getCount() > 0) {
             c.moveToFirst();

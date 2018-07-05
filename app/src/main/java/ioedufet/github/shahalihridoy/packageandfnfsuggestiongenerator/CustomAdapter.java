@@ -110,6 +110,10 @@ public class CustomAdapter extends BaseAdapter {
         helper.no.append(".");
         helper.textView.setText(fnf.get(position));
 
+//        don't add button when fnf is not applicable
+        if(fnf.get(position).charAt(0) == 'N')
+            helper.addFnF.setVisibility(View.INVISIBLE);
+
         helper.addFnF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

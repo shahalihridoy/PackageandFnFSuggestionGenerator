@@ -21,8 +21,8 @@ public class AirtlePackageAnalyser {
     Helper superAddaHelper = new Helper("Super Adda");
     Helper dostiHelper = new Helper("Dosti");
     Helper hoichoiHelper = new Helper("Hoichoi");
-    //    Helper gangtalkHelper = new Helper("Gangtalk");
-//    Helper dolbolHelper = new Helper("Dolbol");
+    Helper shobaiEk = new Helper("Shobai Ek");
+        Helper shobaiFnf = new Helper("Shobai FnF");
     Helper foortiHelper = new Helper("Foorti");
     Helper kothaHelper = new Helper("Kotha");
 
@@ -45,37 +45,47 @@ public class AirtlePackageAnalyser {
         if (golpoHelper.cost < min) {
             min = golpoHelper.cost;
             final_helper = golpoHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (addaHelper.cost < min) {
             min = addaHelper.cost;
             final_helper = addaHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (superAddaHelper.cost < min) {
             min = superAddaHelper.cost;
             final_helper = superAddaHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (dostiHelper.cost < min) {
             min = dostiHelper.cost;
             final_helper = dostiHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (foortiHelper.cost < min) {
             min = foortiHelper.cost;
             final_helper = foortiHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (hoichoiHelper.cost < min) {
             min = hoichoiHelper.cost;
             final_helper = hoichoiHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         if (kothaHelper.cost < min) {
             min = kothaHelper.cost;
             final_helper = kothaHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
+        }
+        if(shobaiEk.cost < min){
+            min = shobaiEk.cost;
+            final_helper = shobaiEk;
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
+        }
+        if(shobaiFnf.cost < min){
+            min = shobaiFnf.cost;
+            final_helper = shobaiFnf;
+            System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
         return final_helper;
     }
@@ -139,7 +149,7 @@ public class AirtlePackageAnalyser {
                 } else {
                     if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
                         foortiHelper.cost += Double.valueOf(c.getString(1)) * 16 / 1000;
-                    } else foortiHelper.cost+= Double.valueOf(c.getString(1)) * 21.5 / 1000;
+                    } else foortiHelper.cost += Double.valueOf(c.getString(1)) * 21.5 / 1000;
                 }
 
             } while (c.moveToNext());
@@ -168,6 +178,14 @@ public class AirtlePackageAnalyser {
                 if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
                     kothaHelper.cost += Double.valueOf(c.getString(1)) * 1.65 / 100;
                 } else kothaHelper.cost += Double.valueOf(c.getString(1)) * 2.15 / 100;
+
+//                shobai ek
+                shobaiEk.cost += Double.valueOf(c.getString(1)) * 1.2 / 100;
+
+//                shobai fnf
+                if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
+                    shobaiFnf.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
+                } else shobaiFnf.cost += Double.valueOf(c.getString(1)) * 1 / 100;
 
             } while (c.moveToNext());
         }

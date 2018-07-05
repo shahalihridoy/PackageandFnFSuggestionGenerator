@@ -29,10 +29,10 @@ public class BestPackage extends Fragment {
         currentPackage = (TextView) view.findViewById(R.id.fnfDetails);
 
         currentPackage.setText("Super FnF : "+(MainActivity.bestPackage.superFnf.charAt(0)=='N' ? "0" : MainActivity.bestPackage.superFnf)+"\n");
-        currentPackage.append("General FnF : "+MainActivity.bestPackage.fnf.size()+"\n");
+        currentPackage.append("General FnF : "+(MainActivity.bestPackage.fnf.get(0).charAt(0)=='N' ? "0" : MainActivity.bestPackage.fnf.size())+"\n");
         currentPackage.append("Current Package : "+MainActivity.currentPackage);
-
         packageName.setText(MainActivity.bestPackage.packageName);
+
         return view;
     }
 }

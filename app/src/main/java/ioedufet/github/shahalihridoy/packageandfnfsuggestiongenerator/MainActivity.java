@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     static String from = "";
     static String msgbody;
+    static String currentPackage;
     String fnfFrom = "";
     String fnfMsgbody;
-    static String currentPackage;
 
     AlertDialog.Builder builder;
     Dialog dialog;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_SMS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CALL_PHONE,
             Manifest.permission.RECEIVE_BOOT_COMPLETED
     };
 
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Initialize the map with both permissions
                 perms.put(Manifest.permission.READ_CALL_LOG, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CALL_PHONE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.RECEIVE_SMS, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                     // Check for both permissions
                     if (perms.get(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALL_LOG)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)
@@ -248,7 +253,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        t.start();
+//        if the app has not run yet
+            t.start();
 
 //        let main thread wait untill t finishes
 
@@ -322,10 +328,21 @@ public class MainActivity extends AppCompatActivity {
         bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
 
 //        check package
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("8822", null, "P", null, null);
+        Thread t = new Thread(){
+            @Override
+            public void run() {
 
-        while (!from.equals("8822")) {
+                String ussdCode = "*121*2*1*1"+Uri.encode("#");
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+            }
+        };
+
+        t.start();
+
+        while (!from.equals("8822")){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -333,12 +350,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        currentPackage = msgbody.split(":")[0];
+        currentPackage = msgbody;
+
         System.out.println("Main Activity");
         System.out.println(from + " : " + msgbody);
-        System.out.println(currentPackage);
+
+//        check fnf
         if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-//            check fnf
+
+            SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage("8363", null, "F", null, null);
             while (!from.equals("8363")) {
                 try {
@@ -347,11 +367,10 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            System.out.println(currentPackage);
         }
     }
 
-    void gp(){
+    void gp() {
         //        analyse best package
         bestPackage = new GrameenPhonePackageAnalyzer(MainActivity.this).analyzeGP();
 
@@ -359,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("4444", null, "P", null, null);
 
-        while (!from.equals("GP")) {
+        while (!from.equals("GP")){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -371,7 +390,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(from + " : " + msgbody);
 
         if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-            currentPackage = msgbody.split(":")[0];
 //            check fnf
             smsManager.sendTextMessage("2888", null, "FF", null, null);
             while (!from.equals("2888")) {
@@ -385,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void robi(){
+    void robi() {
         //        analyse best package
         bestPackage = new RobiPackageAnalyser(MainActivity.this).analyzeRobi();
 
@@ -393,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("8822", null, "P", null, null);
 
-        while (!from.equals("8822")) {
+        while (!from.equals("8822")){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -405,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(from + " : " + msgbody);
 
         if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-            currentPackage = msgbody.split(":")[0];
 //            check fnf
             smsManager.sendTextMessage("8363", null, "F", null, null);
             while (!from.equals("8363")) {
@@ -419,71 +436,77 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void teletalk(){
+    void teletalk() {
         //        analyse best package
         bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
 
 //        check package
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("154", null, "P", null, null);
-
-        while (!from.equals("154")) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("Main Activity");
-        System.out.println(from + " : " + msgbody);
-
-        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-            currentPackage = msgbody.split(":")[0];
-//            check fnf
-            smsManager.sendTextMessage("363", null, "see", null, null);
-            while (!from.equals("363")) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println(msgbody);
-        }
+//        SmsManager smsManager = SmsManager.getDefault();
+//        smsManager.sendTextMessage("154", null, "P", null, null);
+//
+//        while (!from.equals("154")) {
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        System.out.println("Main Activity");
+//        System.out.println(from + " : " + msgbody);
+//
+//        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+//            currentPackage = msgbody.split(":")[0];
+////            check fnf
+//            smsManager.sendTextMessage("363", null, "see", null, null);
+//            while (!from.equals("363")) {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            System.out.println(msgbody);
+//        }
     }
 
-    void banglalink(){
+    void banglalink() {
         //        analyse best package
-        bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+        bestPackage = new BanglalinkPackageAnalyser(MainActivity.this).analyseBanglalink();
 
 //        check package
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("8822", null, "P", null, null);
-
-        while (!from.equals("8822")) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        String ussdCode = Uri.encode("*121*2*1*1#");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
 
-        System.out.println("Main Activity");
-        System.out.println(from + " : " + msgbody);
+//        long start = System.currentTimeMillis();
+//        while (!from.equals("8822") && (System.currentTimeMillis()-start) < (2*60*1000)){
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        System.out.println("Main Activity");
+//        System.out.println(from + " : " + msgbody);
+//
+//        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+//            currentPackage = msgbody.split(":")[0];
+////            check fnf
+//            smsManager.sendTextMessage("8363", null, "F", null, null);
+//            while (!from.equals("8363")) {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            System.out.println(msgbody);
+//        }
 
-        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-            currentPackage = msgbody.split(":")[0];
-//            check fnf
-            smsManager.sendTextMessage("8363", null, "F", null, null);
-            while (!from.equals("8363")) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println(msgbody);
-        }
     }
 }
