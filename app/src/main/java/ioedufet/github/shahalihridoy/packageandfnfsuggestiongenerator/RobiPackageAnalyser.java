@@ -19,13 +19,13 @@ public class RobiPackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    Helper megaHelper = new Helper("Mega FnF");
-    Helper gotiHelper = new Helper("Goti Package");
-    Helper hoothutHelper = new Helper("Hoot Hut Chomok");
-    Helper clubHelper = new Helper("Robi Club");
-    Helper nobannoHelper = new Helper("Nobanno Package");
-    Helper shorolHelper = new Helper("Shorol Package");
-    Helper noorHelper = new Helper("Noor Package");
+    static Helper megaHelper = new Helper("Mega FnF","Robi","*8999*90");
+    static Helper gotiHelper = new Helper("Goti Package","Robi","*8999*36");
+    static Helper hoothutHelper = new Helper("Hoot Hut Chomok","Robi","*8999*32");
+    static Helper clubHelper = new Helper("Robi Club","Robi","*8999*34");
+    static Helper nobannoHelper = new Helper("Nobanno Package","Robi","*8999*37");
+    static Helper shorolHelper = new Helper("Shorol Package","Robi","*8999*39");
+    static Helper noorHelper = new Helper("Noor Package","Robi","*123*00777");
 
 
     //    constructor receiving context
@@ -36,6 +36,15 @@ public class RobiPackageAnalyser {
 
     //    analyze overall Robi Package
     public Helper analyzeRobi() {
+
+        min = 99999999.0;
+        megaHelper.cost = 0;
+        clubHelper.cost = 0;
+        shorolHelper.cost = 0;
+        nobannoHelper.cost = 0;
+        hoothutHelper.cost = 0;
+        nobannoHelper.cost = 0;
+        nobannoHelper.cost = 0;
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();

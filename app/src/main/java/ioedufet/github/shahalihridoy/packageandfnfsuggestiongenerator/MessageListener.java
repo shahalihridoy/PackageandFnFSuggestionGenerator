@@ -5,21 +5,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
+import android.widget.Toast;
 
 public class MessageListener extends BroadcastReceiver {
+
+    String messageBody;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        messageBody = "";
+
         if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    String messageBody = smsMessage.getMessageBody();
-                    String number = smsMessage.getOriginatingAddress();
-                    MainActivity.from = number;
-                    MainActivity.msgbody = messageBody;
-                    System.out.println(number+" : "+messageBody);
+//                    getting the full message by appending pars
+                    messageBody += smsMessage.getMessageBody();
+                    MainActivity.from = smsMessage.getOriginatingAddress();
                 }
+
+                MainActivity.msgbody = messageBody;
+
+//            when fnf list is received, analyse it
+                for (String number : messageBody.split("\\r?\\n"))
+                    if (number != null)
+                        if (number.trim().charAt(0) == '0')
+                            System.out.println(":" + number + ":");
+
             } else {
                 Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
                 SmsMessage[] msgs = null;
@@ -33,11 +48,13 @@ public class MessageListener extends BroadcastReceiver {
                         msgs = new SmsMessage[pdus.length];
                         for (int i = 0; i < msgs.length; i++) {
                             msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                            msg_from = msgs[i].getOriginatingAddress();
-                            String msgBody = msgs[i].getMessageBody();
+                            MainActivity.from = msgs[i].getOriginatingAddress();
+//                            getting full message by appending parts
+                            messageBody += msgs[i].getMessageBody();
                         }
+                        MainActivity.msgbody = messageBody;
                     } catch (Exception e) {
-//                            Log.d("Exception caught",e.getMessage());
+                        Toast.makeText(context,"Couldn't read message",Toast.LENGTH_LONG).show();
                     }
                 }
             }

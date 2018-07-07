@@ -14,17 +14,17 @@ public class AirtlePackageAnalyser {
     Cursor c;
     double min = 99999999.0;
     String packageName = null;
-    Helper final_helper;
+    static Helper final_helper;
 
-    Helper golpoHelper = new Helper("Golpo");
-    Helper addaHelper = new Helper("Adda");
-    Helper superAddaHelper = new Helper("Super Adda");
-    Helper dostiHelper = new Helper("Dosti");
-    Helper hoichoiHelper = new Helper("Hoichoi");
-    Helper shobaiEk = new Helper("Shobai Ek");
-        Helper shobaiFnf = new Helper("Shobai FnF");
-    Helper foortiHelper = new Helper("Foorti");
-    Helper kothaHelper = new Helper("Kotha");
+    static Helper golpoHelper = new Helper("Golpo","Airtel","*121*82"); //add # after code
+    static Helper addaHelper = new Helper("Adda","Airtel","*121*81");
+    static Helper superAddaHelper = new Helper("Super Adda","Airtel","*121*88");
+    static Helper dostiHelper = new Helper("Dosti","Airtel","*121*89");
+    static Helper hoichoiHelper = new Helper("Hoichoi","Airtel","*121*87");
+    static Helper shobaiEk = new Helper("Shobai Ek","Airtel","Recharge taka 26");
+    static Helper shobaiFnf = new Helper("Shobai FnF","Airtel","Recharge taka 26");
+    static Helper foortiHelper = new Helper("Foorti","Airtel","*121*85");
+    static Helper kothaHelper = new Helper("Kotha","Airtel","*121*83");
 
     //    constructor receiving context
     public AirtlePackageAnalyser(Context context) {
@@ -38,6 +38,17 @@ public class AirtlePackageAnalyser {
         superAddaHelper.fnf.clear();
         dostiHelper.fnf.clear();
         hoichoiHelper.fnf.clear();
+
+        min = 99999999.0;
+        addaHelper.cost = 0;
+        superAddaHelper.cost = 0;
+        dostiHelper.cost = 0;
+        hoichoiHelper.cost = 0;
+        foortiHelper.cost = 0;
+        kothaHelper.cost = 0;
+        golpoHelper.cost = 0;
+        shobaiFnf.cost = 0;
+        shobaiEk.cost = 0;
 
         tenSecondPulsePackageAnalysis();
         oneSecondPulsePackageAnalysis();

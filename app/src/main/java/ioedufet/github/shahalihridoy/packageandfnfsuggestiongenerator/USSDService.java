@@ -14,6 +14,7 @@ public class USSDService extends AccessibilityService {
 
     public static String TAG = USSDService.class.getSimpleName();
     List<CharSequence> eventText;
+    static boolean isAccessibilityOn = false;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -73,5 +74,7 @@ public class USSDService extends AccessibilityService {
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         setServiceInfo(info);
+        isAccessibilityOn = true;
     }
+
 }

@@ -7,15 +7,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.TimeUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +28,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,21 +37,29 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    //<editor-fold desc=" int variables = 5;">
     Database db;
     Cursor c;
-    String operator;
+    static String operator;
 
     static String from = "";
-    static String msgbody;
-    static String currentPackage;
-    String fnfFrom = "";
-    String fnfMsgbody;
+    static String msgbody = "";
+    static String currentPackage = "Unknown";
+    static String save = "xxx";
 
     AlertDialog.Builder builder;
+    AlertDialog.Builder chooser;
     Dialog dialog;
+    final Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            chooser.show();
+        }
+    };
 
-    protected static Helper bestPackage = new Helper();
-    protected static Helper bestOperator = new Helper();
+    protected static Helper bestPackage;
+    protected static Helper bestOperator;
 
     List<String> listPermissionsNeeded = new ArrayList<>();
     DataLoader dataLoader = new DataLoader(this, this);
@@ -58,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     ViewPagerAdapter vpa;
+    //</editor-fold>
 
+    //<editor-fold desc="String[] permission = new String[]{...};">
     String[] permission = new String[]{
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.SEND_SMS,
@@ -68,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CALL_PHONE,
             Manifest.permission.RECEIVE_BOOT_COMPLETED
     };
+    //</editor-fold>
 
 // get Data from call_history
 
@@ -82,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 //            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
 //            backgroundServiceMarshmallow.startBackgroundService();
 
-            //        get required data
+//        get required data
             if (checkPermission()) {
                 getData();
             }
@@ -254,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
 //        if the app has not run yet
-            t.start();
+        t.start();
 
 //        let main thread wait untill t finishes
 
@@ -282,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         operator = getOperator();
         bestOperator = new PackageAnalyser(MainActivity.this).analysePackage();
 
+        //<editor-fold desc="analyse best pack based on Operator">
         switch (operator.toUpperCase().charAt(0)) {
             case 'A':
                 airtel();
@@ -301,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+        //</editor-fold>
     }
 
     private void setData() {
@@ -322,17 +340,18 @@ public class MainActivity extends AppCompatActivity {
         return manager.getNetworkOperatorName();
     }
 
+
     void airtel() {
 
 //        analyse best package
         bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
 
 //        check package
-        Thread t = new Thread(){
+        Thread t = new Thread() {
             @Override
             public void run() {
 
-                String ussdCode = "*121*2*1*1"+Uri.encode("#");
+                String ussdCode = "*121*2*1*1" + Uri.encode("#");
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -342,7 +361,8 @@ public class MainActivity extends AppCompatActivity {
 
         t.start();
 
-        while (!from.equals("8822")){
+//        wait untill message is received
+        while (!from.equals("8822")) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -356,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(from + " : " + msgbody);
 
 //        check fnf
-        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
 
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage("8363", null, "F", null, null);
@@ -378,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("4444", null, "P", null, null);
 
-        while (!from.equals("GP")){
+        while (!from.equals("GP")) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -386,11 +406,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Main Activity");
-        System.out.println(from + " : " + msgbody);
 
-        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
-//            check fnf
+//        check how much balance is saved
+        String temp = msgbody.toLowerCase();
+        if (temp.contains("bondhu")) {
+            save = Double.toString(GrameenPhonePackageAnalyzer.bondhuHelper.cost).split("\\.")[0];
+        } else if (temp.contains("chinto")) {
+            save = Double.toString(GrameenPhonePackageAnalyzer.nishchintoHelper.cost).split("\\.")[0];
+        } else if (temp.contains("smile")) {
+            save = Double.toString(GrameenPhonePackageAnalyzer.smileHelper.cost).split("\\.")[0];
+        } else if (temp.contains("juice")) {
+            save = Double.toString(GrameenPhonePackageAnalyzer.djuiceHelper.cost).split("\\.")[0];
+        }
+
+
+//        check fnf only if the current package is same as best package
+        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
             smsManager.sendTextMessage("2888", null, "FF", null, null);
             while (!from.equals("2888")) {
                 try {
@@ -399,6 +430,11 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+//            when fnf list is received, analyse it
+            for (String number : msgbody.split("\\r?\\n"))
+                if (number != null)
+                    if (number.trim().charAt(0) == '0')
+                        System.out.println(":" + number + ":");
             System.out.println(msgbody);
         }
     }
@@ -411,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("8822", null, "P", null, null);
 
-        while (!from.equals("8822")){
+        while (!from.equals("8822")) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -419,10 +455,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        save = Double.toString(RobiPackageAnalyser.shorolHelper.cost - bestPackage.cost).split("\\.")[0];
         System.out.println("Main Activity");
         System.out.println(from + " : " + msgbody);
 
-        if (msgbody.substring(0, 5).equals(bestPackage.packageName.substring(0, 5))) {
+        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
 //            check fnf
             smsManager.sendTextMessage("8363", null, "F", null, null);
             while (!from.equals("8363")) {
@@ -439,6 +476,34 @@ public class MainActivity extends AppCompatActivity {
     void teletalk() {
         //        analyse best package
         bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
+
+//        choose which package you have
+        chooser = new AlertDialog.Builder(MainActivity.this);
+        chooser.setTitle("Choose your current package");
+        final String packageId[] = {"Youth Package", "Projonmo Package", "Shadheen Package"};
+        chooser.setItems(packageId, new DialogInterface.OnClickListener() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (packageId[which].charAt(0)) {
+                    case 'Y':
+                        save = Double.toString(TeletalkPackageAnalyser.youthHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    case 'P':
+                        save = Double.toString(TeletalkPackageAnalyser.projonmoHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    case 'S':
+                        save = Double.toString(TeletalkPackageAnalyser.shadheenHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                }
+
+//                update UI in BestPackage
+                currentPackage = packageId[which];
+                BestPackage.setVariable();
+            }
+        });
+
+        handler.sendEmptyMessage(0);
 
 //        check package
 //        SmsManager smsManager = SmsManager.getDefault();
@@ -470,17 +535,47 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
+    @SuppressLint("MissingPermission")
     void banglalink() {
-        //        analyse best package
+//        analyse best package
         bestPackage = new BanglalinkPackageAnalyser(MainActivity.this).analyseBanglalink();
 
-//        check package
-        SmsManager smsManager = SmsManager.getDefault();
-        String ussdCode = Uri.encode("*121*2*1*1#");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+//        choose which package you have
+        chooser = new AlertDialog.Builder(MainActivity.this);
+        chooser.setTitle("Choose your current package");
+        final String packageId[] = {"Play Package", "Hello Package", "Desh 10fnf Package", "Desh Ek Rate Package"};
+
+        chooser.setItems(packageId, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                taking the character before the word "package"
+                String s = packageId[which];
+                switch (s.charAt(s.length()-9)) {
+                    case 'y':
+                        save = Double.toString(BanglalinkPackageAnalyser.playHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    case 'o':
+                        save = Double.toString(BanglalinkPackageAnalyser.helloHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    case 'f':
+                        save = Double.toString(BanglalinkPackageAnalyser.desh10Helper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    case 'e':
+                        save = Double.toString(BanglalinkPackageAnalyser.deshEkRateHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    default:
+                        break;
+                }
+
+//                update UI in BestPackage
+                currentPackage = packageId[which];
+                BestPackage.setVariable();
+
+            }
+        });
+
+        handler.sendEmptyMessage(0);
+
 
 //        long start = System.currentTimeMillis();
 //        while (!from.equals("8822") && (System.currentTimeMillis()-start) < (2*60*1000)){
@@ -509,4 +604,5 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
     }
+
 }

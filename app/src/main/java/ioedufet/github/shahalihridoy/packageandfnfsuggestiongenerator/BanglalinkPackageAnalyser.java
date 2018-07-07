@@ -18,10 +18,10 @@ public class BanglalinkPackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    Helper playHelper = new Helper("Play");
-    Helper desh10Helper = new Helper("Desh 10 FnF");
-    Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun");
-    Helper helloHelper = new Helper("Hello Package");
+    static Helper playHelper = new Helper("Play","Banglalink","P");
+    static Helper desh10Helper = new Helper("Desh 10 FnF","Banglalink","*999*1*112");
+    static Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun","Banglalink","*999*1*111");
+    static Helper helloHelper = new Helper("Hello Package","Banglalink","H");
 
     //    constructor receiving context
     public BanglalinkPackageAnalyser(Context context) {
@@ -30,6 +30,12 @@ public class BanglalinkPackageAnalyser {
     }
 
     public Helper analyseBanglalink() {
+
+        min = 99999999.0;
+        playHelper.cost = 0;
+        helloHelper.cost = 0;
+        desh10Helper.cost = 0;
+        deshEkRateHelper.cost = 0;
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();

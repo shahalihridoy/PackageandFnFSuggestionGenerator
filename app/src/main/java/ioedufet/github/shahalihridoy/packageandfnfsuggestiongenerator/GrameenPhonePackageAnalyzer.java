@@ -20,10 +20,10 @@ public class GrameenPhonePackageAnalyzer {
     Double min = 99999999.0;
     String packageName = null;
 
-    Helper bondhuHelper = new Helper("Bondhu Package");
-    Helper smileHelper = new Helper("Smile Package");
-    Helper nishchintoHelper = new Helper("Nishchinto Package");
-    Helper djuiceHelper = new Helper("Djuice Package");
+    static Helper bondhuHelper = new Helper("Bondhu Package","Grameenphone","B");
+    static Helper smileHelper = new Helper("Smile Package","Grameenphone","S");
+    static Helper nishchintoHelper = new Helper("Nishchinto Package","Grameenphone","N");
+    static Helper djuiceHelper = new Helper("Djuice Package","Grameenphone","D");
 
     //    constructor receiving context
     public GrameenPhonePackageAnalyzer(Context context) {
@@ -33,6 +33,13 @@ public class GrameenPhonePackageAnalyzer {
 
     //    analyze overall grameenPhone
     public Helper analyzeGP() {
+
+        min = 99999999.0;
+        bondhuHelper.cost = 0;
+        smileHelper.cost = 0;
+        nishchintoHelper.cost = 0;
+        djuiceHelper.cost = 0;
+
         analyseTenSecondPulse();
         return final_helper;
     }

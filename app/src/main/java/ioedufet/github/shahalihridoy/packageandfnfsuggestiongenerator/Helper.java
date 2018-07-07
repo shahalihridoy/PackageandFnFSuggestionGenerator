@@ -6,6 +6,8 @@ public class Helper {
     String superFnf = "Not Applicable";
     ArrayList<String> fnf = new ArrayList<String>();
     String packageName = "";
+    String operator="";
+    String code;
     double cost = 0;
     boolean sfnf = true;
     int counter = 0;
@@ -13,8 +15,11 @@ public class Helper {
     public Helper(){
 
     }
-    public Helper(String packageName) {
+
+    public Helper(String packageName,String operator,String code) {
         this.packageName = packageName;
+        this.operator = operator;
+        this.code = code;
         fnf.add("Not Applicable");
     }
 }

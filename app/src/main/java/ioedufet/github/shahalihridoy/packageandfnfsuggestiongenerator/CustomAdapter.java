@@ -33,7 +33,7 @@ public class CustomAdapter extends BaseAdapter {
     Context context;
     MainActivity mainActivity;
     List<String> fnf;
-    //    int[] sign;
+
     public static LayoutInflater inflater = null;
 
     public CustomAdapter(MainActivity mainActivity, List<String> fnf) {
@@ -44,57 +44,21 @@ public class CustomAdapter extends BaseAdapter {
 
     }
 
-    /**
-     * How many items are in the data set represented by this Adapter.
-     *
-     * @return Count of items.
-     */
     @Override
     public int getCount() {
         return fnf.size();
     }
 
-    /**
-     * Get the data item associated with the specified position in the data set.
-     *
-     * @param position Position of the item whose data we want within the adapter's
-     *                 data set.
-     * @return The data at the specified position.
-     */
     @Override
     public Object getItem(int position) {
         return fnf.get(position);
     }
 
-    /**
-     * Get the row id associated with the specified position in the list.
-     *
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return The id of the item at the specified position.
-     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    /**
-     * Get a View that displays the data at the specified position in the data set. You can either
-     * create a View manually or inflate it from an XML layout file. When the View is inflated, the
-     * parent View (GridView, ListView...) will apply default layout parameters unless you use
-     * {@link LayoutInflater#inflate(int, ViewGroup, boolean)}
-     * to specify a root view and to prevent attachment to the root.
-     *
-     * @param position    The position of the item within the adapter's data set of the item whose view
-     *                    we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *                    is non-null and of an appropriate type before using. If it is not possible to convert
-     *                    this view to display the correct data, this method can create a new view.
-     *                    Heterogeneous lists can specify their number of view types, so that this View is
-     *                    always of the right type (see {@link #getViewTypeCount()} and
-     *                    {@link #getItemViewType(int)}).
-     * @param parent      The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
-     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Helper helper = new Helper();
@@ -111,17 +75,44 @@ public class CustomAdapter extends BaseAdapter {
         helper.textView.setText(fnf.get(position));
 
 //        don't add button when fnf is not applicable
-        if(fnf.get(position).charAt(0) == 'N')
+        if (fnf.get(position).charAt(0) == 'N')
             helper.addFnF.setVisibility(View.INVISIBLE);
 
-        helper.addFnF.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
+//            when fnf is already added, delete this from the bestpackage fnf list
+        else if (MainActivity.msgbody.contains(fnf.get(position)))
+            helper.addFnF.setText("Added");
+
+        else
+            helper.addFnF.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //<editor-fold desc="Send sms for fnf setup">
+                    try {
+                        SmsManager smsManager = SmsManager.getDefault();
+                        switch (MainActivity.operator.toUpperCase().charAt(0)) {
+                            case 'A':
+                                smsManager.sendTextMessage("8363", null, "ADD "+fnf.get(position), null, null);
+                                break;
+                            case 'G':
+                                smsManager.sendTextMessage("2888", null, fnf.get(position), null, null);
+                                break;
+                            case 'R':
+                                smsManager.sendTextMessage("8363", null, "A "+fnf.get(position), null, null);
+                                break;
+                            case 'B':
+                                smsManager.sendTextMessage("3300", null, "add "+fnf.get(position), null, null);
+                                break;
+                            case 'T':
+                                smsManager.sendTextMessage("363", null,"reg", null, null);
+                                smsManager.sendTextMessage("363", null, "add "+fnf.get(position), null, null);
+                                break;
+                            default:
+                                break;
+                        }
 //                    sending sms
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + 4444));
-                    intent.putExtra("sms_body", "P");
-                    mainActivity.startActivity(intent);
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + 4444));
+//                        intent.putExtra("sms_body", "P");
+//                        mainActivity.startActivity(intent);
 
 
 //                    -----------------------------------------
@@ -155,17 +146,18 @@ public class CustomAdapter extends BaseAdapter {
 //                    smsManager.sendTextMessage("01521208815", null, "walllaa", null, null);
 //                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //</editor-fold>
+                    System.out.println("you clicked on " + fnf.get(position));
                 }
-                System.out.println("you clicked on "+fnf.get(position));
-            }
-        });
+            });
 
         return view;
     }
 
-    public class Helper{
+    public class Helper {
         TextView textView;
         TextView no;
         Button addFnF;
