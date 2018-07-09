@@ -61,7 +61,7 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Helper helper = new Helper();
+        final Helper helper = new Helper();
         View view = inflater.inflate(R.layout.list, null);
 
 //        helper.imageView = (ImageView) view.findViewById(R.id.list_image);
@@ -80,7 +80,7 @@ public class CustomAdapter extends BaseAdapter {
 
 //            when fnf is already added, delete this from the bestpackage fnf list
         else if (MainActivity.msgbody.contains(fnf.get(position)))
-            helper.addFnF.setText("Added");
+            helper.addFnF.setText("ADDED");
 
         else
             helper.addFnF.setOnClickListener(new View.OnClickListener() {
@@ -92,19 +92,24 @@ public class CustomAdapter extends BaseAdapter {
                         switch (MainActivity.operator.toUpperCase().charAt(0)) {
                             case 'A':
                                 smsManager.sendTextMessage("8363", null, "ADD "+fnf.get(position), null, null);
+                                helper.addFnF.setVisibility(View.INVISIBLE);
                                 break;
                             case 'G':
                                 smsManager.sendTextMessage("2888", null, fnf.get(position), null, null);
+                                helper.addFnF.setVisibility(View.INVISIBLE);
                                 break;
                             case 'R':
                                 smsManager.sendTextMessage("8363", null, "A "+fnf.get(position), null, null);
+                                helper.addFnF.setVisibility(View.INVISIBLE);
                                 break;
                             case 'B':
                                 smsManager.sendTextMessage("3300", null, "add "+fnf.get(position), null, null);
+                                helper.addFnF.setVisibility(View.INVISIBLE);
                                 break;
                             case 'T':
                                 smsManager.sendTextMessage("363", null,"reg", null, null);
                                 smsManager.sendTextMessage("363", null, "add "+fnf.get(position), null, null);
+                                helper.addFnF.setVisibility(View.INVISIBLE);
                                 break;
                             default:
                                 break;
@@ -145,12 +150,10 @@ public class CustomAdapter extends BaseAdapter {
 //                    SmsManager smsManager = SmsManager.getDefault();
 //                    smsManager.sendTextMessage("01521208815", null, "walllaa", null, null);
 //                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     //</editor-fold>
-                    System.out.println("you clicked on " + fnf.get(position));
                 }
             });
 

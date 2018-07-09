@@ -1,8 +1,16 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +48,30 @@ public class FnF extends Fragment {
         if (MainActivity.bestPackage.superFnf.charAt(0) == 'N')
             addFnf.setVisibility(View.INVISIBLE);
         else addFnf.setOnClickListener(new View.OnClickListener() {
+
+            SmsManager smsManager = SmsManager.getDefault();
+
             @Override
             public void onClick(View v) {
-//                todo
+                switch (MainActivity.operator.toUpperCase().charAt(0)) {
+//                    no super fnf in airtel
+                    case 'G':
+                        smsManager.sendTextMessage("2888",null,("SF "+MainActivity.bestPackage.sfnf),null,null);
+                        addFnf.setVisibility(View.INVISIBLE);
+                        break;
+                    case 'R':
+                        smsManager.sendTextMessage("8363",null,("P "+MainActivity.bestPackage.sfnf),null,null);
+                        addFnf.setVisibility(View.INVISIBLE);
+                        break;
+                    case 'B':
+                        String ussdCode = "*166*7*" +MainActivity.bestPackage.sfnf+Uri.encode("#");
+                        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+                        addFnf.setVisibility(View.INVISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+
             }
         });
 

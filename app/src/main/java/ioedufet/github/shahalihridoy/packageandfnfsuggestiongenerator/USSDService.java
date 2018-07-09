@@ -23,16 +23,11 @@ public class USSDService extends AccessibilityService {
         /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
             return;
-        }
-        else if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView"))) {
+        } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView"))) {
             return;
-        }
-        else if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) {
+        } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) {
             return;
-        }
-
-
-        else if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             eventText = event.getText();
         } else {
             eventText = Collections.singletonList(source.getText());
@@ -40,12 +35,7 @@ public class USSDService extends AccessibilityService {
 
         String text = processUSSDText(eventText);
 
-        if( TextUtils.isEmpty(text) ) return;
-
-        // Close dialog
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//            performGlobalAction(GLOBAL_ACTION_BACK); // This works on 4.1+ only
-        }
+        if (TextUtils.isEmpty(text)) return;
 
         System.out.println(text);
         // Handle USSD response here
@@ -53,9 +43,9 @@ public class USSDService extends AccessibilityService {
     }
 
     private String processUSSDText(List<CharSequence> eventText) {
-        String text="";
+        String text = "";
         for (CharSequence s : eventText) {
-            System.out.println(String.valueOf(s));
+//            System.out.println(String.valueOf(s));
             text += String.valueOf(s);
         }
         return text;
@@ -75,6 +65,14 @@ public class USSDService extends AccessibilityService {
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         setServiceInfo(info);
         isAccessibilityOn = true;
+    }
+
+    void performGlobalBack(){
+        //        go back to the main activity
+        // Close dialog
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            performGlobalAction(GLOBAL_ACTION_BACK); // This works on 4.1+ only
+        }
     }
 
 }

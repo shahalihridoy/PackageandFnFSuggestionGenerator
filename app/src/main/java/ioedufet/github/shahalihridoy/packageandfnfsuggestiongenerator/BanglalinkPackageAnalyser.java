@@ -18,10 +18,10 @@ public class BanglalinkPackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    static Helper playHelper = new Helper("Play","Banglalink","P");
-    static Helper desh10Helper = new Helper("Desh 10 FnF","Banglalink","*999*1*112");
-    static Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun","Banglalink","*999*1*111");
-    static Helper helloHelper = new Helper("Hello Package","Banglalink","H");
+    Helper playHelper = new Helper("Play","Banglalink","P");
+    Helper desh10Helper = new Helper("Desh 10 FnF","Banglalink","*999*1*112");
+    Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun","Banglalink","*999*1*111");
+    Helper helloHelper = new Helper("Hello Package","Banglalink","H");
 
     //    constructor receiving context
     public BanglalinkPackageAnalyser(Context context) {
@@ -30,12 +30,6 @@ public class BanglalinkPackageAnalyser {
     }
 
     public Helper analyseBanglalink() {
-
-        min = 99999999.0;
-        playHelper.cost = 0;
-        helloHelper.cost = 0;
-        desh10Helper.cost = 0;
-        deshEkRateHelper.cost = 0;
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();
@@ -98,8 +92,9 @@ public class BanglalinkPackageAnalyser {
             c.moveToFirst();
             do {
 //                play pack
-                if (playHelper.superFnf.equals(c.getString(0)))
-                    min = 99999999.0; //just to skip this test
+                if (playHelper.superFnf.equals(c.getString(0))){
+
+                }
                 else if (playHelper.fnf.contains(c.getString(0)) && c.getString(0).charAt(2) != '9') {
                     playHelper.cost += Double.valueOf(c.getString(1)) * 11 / 1000;
                 } else {

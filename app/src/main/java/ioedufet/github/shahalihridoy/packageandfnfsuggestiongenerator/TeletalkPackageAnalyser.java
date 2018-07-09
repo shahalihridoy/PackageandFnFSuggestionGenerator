@@ -18,9 +18,9 @@ public class TeletalkPackageAnalyser {
     String packageName = null;
 
     Helper final_helper;
-    static Helper projonmoHelper = new Helper("Projonmo Package","Teletalk","Buy a Projonmo Sim from Teletalk");
-    static Helper youthHelper = new Helper("Youth Package","Teletalk","Buy a Youth Sim from Teletalk");
-    static Helper shadheenHelper = new Helper("Shadheen Package","Teletalk","Buy a Shadheen Sim from Teletalk");
+    Helper projonmoHelper = new Helper("Projonmo Package","Teletalk","Buy a Projonmo Sim from Teletalk");
+    Helper youthHelper = new Helper("Youth Package","Teletalk","Buy a Youth Sim from Teletalk");
+    Helper shadheenHelper = new Helper("Shadheen Package","Teletalk","Buy a Shadheen Sim from Teletalk");
 
     //    constructor receiving context
     public TeletalkPackageAnalyser(Context context) {
@@ -29,11 +29,6 @@ public class TeletalkPackageAnalyser {
     }
 
     public Helper analyseTeletalk() {
-
-        min = 99999999.0;
-        projonmoHelper.cost = 0;
-        youthHelper.cost = 0;
-        shadheenHelper.cost = 0;
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();

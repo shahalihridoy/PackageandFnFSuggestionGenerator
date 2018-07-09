@@ -20,10 +20,10 @@ public class GrameenPhonePackageAnalyzer {
     Double min = 99999999.0;
     String packageName = null;
 
-    static Helper bondhuHelper = new Helper("Bondhu Package","Grameenphone","B");
-    static Helper smileHelper = new Helper("Smile Package","Grameenphone","S");
-    static Helper nishchintoHelper = new Helper("Nishchinto Package","Grameenphone","N");
-    static Helper djuiceHelper = new Helper("Djuice Package","Grameenphone","D");
+    Helper bondhuHelper = new Helper("Bondhu Package","Grameenphone","B");
+    Helper smileHelper = new Helper("Smile Package","Grameenphone","S");
+    Helper nishchintoHelper = new Helper("Nishchinto Package","Grameenphone","N");
+    Helper djuiceHelper = new Helper("Djuice Package","Grameenphone","D");
 
     //    constructor receiving context
     public GrameenPhonePackageAnalyzer(Context context) {
@@ -34,13 +34,29 @@ public class GrameenPhonePackageAnalyzer {
     //    analyze overall grameenPhone
     public Helper analyzeGP() {
 
-        min = 99999999.0;
-        bondhuHelper.cost = 0;
-        smileHelper.cost = 0;
-        nishchintoHelper.cost = 0;
-        djuiceHelper.cost = 0;
-
         analyseTenSecondPulse();
+
+        if(min>bondhuHelper.cost){
+            min = bondhuHelper.cost;
+            final_helper = bondhuHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>smileHelper.cost){
+            min = smileHelper.cost;
+            final_helper = smileHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>nishchintoHelper.cost){
+            min = nishchintoHelper.cost;
+            final_helper = nishchintoHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+        if(min>djuiceHelper.cost){
+            min = djuiceHelper.cost;
+            final_helper = djuiceHelper;
+            System.out.println(final_helper.packageName+": "+final_helper.cost);
+        }
+
         return final_helper;
     }
 
@@ -58,11 +74,11 @@ public class GrameenPhonePackageAnalyzer {
 
 //                bondhu pack
 //                total 18 fnf including super fnf
-                if (bondhuHelper.counter < 19) {
-                    if (c.getString(0).charAt(2) == '7' && count_super_fnf) {
+                if (bondhuHelper.counter < 18) {
+                    if (c.getString(0).charAt(2) == '7' && bondhuHelper.sfnf) {
                         bondhuHelper.superFnf = c.getString(0);
                         bondhuHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 5.5; //taka
-                        count_super_fnf = false;
+                        bondhuHelper.sfnf = false;
                     } else {
                         bondhuHelper.fnf.add(c.getString(0));
                         bondhuHelper.cost += Double.valueOf(c.getString(1)) / 1000 * 11.5; //taka
@@ -104,27 +120,6 @@ public class GrameenPhonePackageAnalyzer {
                 }
             } while (c.moveToNext());
             db.close();
-        }
-
-        if(min>bondhuHelper.cost){
-            min = bondhuHelper.cost;
-            final_helper = bondhuHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
-        }
-        if(min>smileHelper.cost){
-            min = smileHelper.cost;
-            final_helper = smileHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
-        }
-        if(min>nishchintoHelper.cost){
-            min = nishchintoHelper.cost;
-            final_helper = nishchintoHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
-        }
-        if(min>djuiceHelper.cost){
-            min = djuiceHelper.cost;
-            final_helper = djuiceHelper;
-            System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
     }
 

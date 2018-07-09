@@ -29,6 +29,8 @@ public class MessageListener extends BroadcastReceiver {
 
                 MainActivity.msgbody = messageBody;
 
+                System.out.println(messageBody);
+                
 //            when fnf list is received, analyse it
                 for (String number : messageBody.split("\\r?\\n"))
                     if (number != null)

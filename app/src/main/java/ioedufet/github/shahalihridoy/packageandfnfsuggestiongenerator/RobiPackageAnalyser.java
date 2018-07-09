@@ -19,13 +19,13 @@ public class RobiPackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    static Helper megaHelper = new Helper("Mega FnF","Robi","*8999*90");
-    static Helper gotiHelper = new Helper("Goti Package","Robi","*8999*36");
-    static Helper hoothutHelper = new Helper("Hoot Hut Chomok","Robi","*8999*32");
-    static Helper clubHelper = new Helper("Robi Club","Robi","*8999*34");
-    static Helper nobannoHelper = new Helper("Nobanno Package","Robi","*8999*37");
-    static Helper shorolHelper = new Helper("Shorol Package","Robi","*8999*39");
-    static Helper noorHelper = new Helper("Noor Package","Robi","*123*00777");
+    Helper megaHelper = new Helper("Mega FnF","Robi","*8999*90");
+    Helper gotiHelper = new Helper("Goti Package","Robi","*8999*36");
+    Helper hoothutHelper = new Helper("Hoot Hut Chomok","Robi","*8999*32");
+    Helper clubHelper = new Helper("Robi Club","Robi","*8999*34");
+    Helper nobannoHelper = new Helper("Nobanno Package","Robi","*8999*37");
+    Helper shorolHelper = new Helper("Shorol Package","Robi","*8999*39");
+    Helper noorHelper = new Helper("Noor Package","Robi","*123*00777");
 
 
     //    constructor receiving context
@@ -36,15 +36,6 @@ public class RobiPackageAnalyser {
 
     //    analyze overall Robi Package
     public Helper analyzeRobi() {
-
-        min = 99999999.0;
-        megaHelper.cost = 0;
-        clubHelper.cost = 0;
-        shorolHelper.cost = 0;
-        nobannoHelper.cost = 0;
-        hoothutHelper.cost = 0;
-        nobannoHelper.cost = 0;
-        nobannoHelper.cost = 0;
 
         analyseOneSecondPulse();
         analyseTenSecondPulse();
@@ -71,12 +62,12 @@ public class RobiPackageAnalyser {
         }
         if(min>noorHelper.cost){
             min = noorHelper.cost;
-            final_helper = nobannoHelper;
+            final_helper = noorHelper;
             System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
         if(min>hoothutHelper.cost){
-            min = megaHelper.cost;
-            final_helper = megaHelper;
+            min = hoothutHelper.cost;
+            final_helper = hoothutHelper;
             System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
         if(min>nobannoHelper.cost){
@@ -88,14 +79,17 @@ public class RobiPackageAnalyser {
     }
 
     public void analyseOneSecondPulse(){
+
         megaHelper.fnf.clear();
+        hoothutHelper.fnf.clear();
+
         c = db.oneSecondPulse();
         if(c.getCount()>0){
             c.moveToFirst();
             do {
 //                mega fnf pack
 //                total 81 fnf & 0 super fnf
-                if (megaHelper.counter < 80) {
+                if (megaHelper.counter < 81) {
 
                     megaHelper.fnf.add(c.getString(0));
 //                  if number is Robi or Airtel
@@ -133,16 +127,17 @@ public class RobiPackageAnalyser {
 //                hoot hut pack
 //                when fnf is robi/airtel
                 if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                    if (selfFnf < 4)
+                    if (selfFnf < 4){
                         hoothutHelper.fnf.add(c.getString(0));
+                        selfFnf++;
+                    }
                     hoothutHelper.cost += Double.valueOf(c.getString(1)) * 13 / 1000;
-                    selfFnf++;
                 } else if ((c.getString(0).charAt(2) != '8' || c.getString(0).charAt(2) != '6') && otherFnf < 3) {
                     hoothutHelper.fnf.add(c.getString(0));
                     hoothutHelper.cost += Double.valueOf(c.getString(1)) * 13 / 1000;
                     otherFnf++;
                 } else {
-                    megaHelper.cost += Double.valueOf(c.getString(1)) * 22 / 1000;
+                    hoothutHelper.cost += Double.valueOf(c.getString(1)) * 22 / 1000;
                 }
 
 

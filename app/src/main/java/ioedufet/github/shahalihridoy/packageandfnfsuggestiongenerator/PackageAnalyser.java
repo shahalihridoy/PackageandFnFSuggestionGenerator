@@ -5,8 +5,10 @@ import android.content.Context;
 import java.util.ArrayList;
 
 public class PackageAnalyser {
+
     Context context;
-    Helper helper = new Helper();
+    Helper helper;
+
     public PackageAnalyser(Context context){
         this.context = context;
     }
@@ -19,36 +21,26 @@ public class PackageAnalyser {
         Helper airtelHelper = new AirtlePackageAnalyser(context).analyseAirtel();
         Helper teletalkHelper = new TeletalkPackageAnalyser(context).analyseTeletalk();
 
-        double min = 99999.0;
+        double min = 999999.0;
         if(min>robihelper.cost){
             min = robihelper.cost;
-            helper.packageName = robihelper.packageName;
-            helper.superFnf = robihelper.superFnf;
-            helper.fnf = robihelper.fnf;
+            helper = robihelper;
         }
         if(min>blhelper.cost){
             min = blhelper.cost;
-            helper.packageName = blhelper.packageName;
-            helper.superFnf = blhelper.superFnf;
-            helper.fnf = blhelper.fnf;
+            helper = blhelper;
         }
         if(min>gphelper.cost){
             min = gphelper.cost;
-            helper.packageName = gphelper.packageName;
-            helper.superFnf = gphelper.superFnf;
-            helper.fnf = gphelper.fnf;
+            helper = gphelper;
         }
         if(min>airtelHelper.cost){
             min = airtelHelper.cost;
-            helper.packageName = airtelHelper.packageName;
-            helper.superFnf = airtelHelper.superFnf;
-            helper.fnf = airtelHelper.fnf;
+            helper = airtelHelper;
         }
         if(min>teletalkHelper.cost){
             min = teletalkHelper.cost;
-            helper.packageName = teletalkHelper.packageName;
-            helper.superFnf = teletalkHelper.superFnf;
-            helper.fnf = teletalkHelper.fnf;
+            helper = teletalkHelper;
         }
         return helper;
     }

@@ -22,6 +22,7 @@ public class BestOperator extends Fragment {
     TextView superfnf;
     ListView fnfList;
     Button addFnf;
+    TextView operator;
 
     public BestOperator() {
         // Required empty public constructor
@@ -36,20 +37,14 @@ public class BestOperator extends Fragment {
         packageName = (TextView) view.findViewById(R.id.package_name);
         superfnf = (TextView) view.findViewById(R.id.super_fnf);
         fnfList = (ListView) view.findViewById(R.id.fnf_list);
-        addFnf = (Button) view.findViewById(R.id.addFnF);
+        operator = (TextView) view.findViewById(R.id.operator);
 
         packageName.setText(MainActivity.bestOperator.packageName);
         superfnf.setText(MainActivity.bestOperator.superFnf);
         fnfList.setAdapter(new CustomAdapter((MainActivity) getActivity(), MainActivity.bestOperator.fnf));
 
-        if (MainActivity.bestOperator.superFnf.charAt(0) == 'N')
-            addFnf.setVisibility(View.INVISIBLE);
-        else addFnf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                todo
-            }
-        });
+        operator.setText(MainActivity.bestOperator.operator);
+        operator.append("\nYou could save xxx taka");
 
         return view;
     }

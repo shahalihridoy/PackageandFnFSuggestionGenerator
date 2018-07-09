@@ -69,7 +69,7 @@ public class BestPackage extends Fragment {
                             }
                             break;
                         case 'T':
-                            Toast.makeText(getActivity(),MainActivity.bestPackage.code,Toast.LENGTH_LONG);
+                            Toast.makeText(getActivity(),MainActivity.bestPackage.code,Toast.LENGTH_LONG).show();
                             break;
                         default:
                             break;

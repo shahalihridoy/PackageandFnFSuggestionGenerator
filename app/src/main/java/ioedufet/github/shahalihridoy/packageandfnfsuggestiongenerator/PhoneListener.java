@@ -2,6 +2,8 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.provider.Telephony;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -26,39 +30,23 @@ public class PhoneListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-//        read message received
-        if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    String messageBody = smsMessage.getMessageBody();
-                    String number = smsMessage.getOriginatingAddress();
-                    Toast.makeText(context,number,Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
-                SmsMessage[] msgs = null;
-                String msg_from;
+        //        //<editor-fold desc="Notification">
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Package & FnF Suggestion Generator")
+                .setContentText("From broadcast listener")
+                .setContentIntent(PendingIntent.getActivity(context,
+                        0,
+                        new Intent(context,MainActivity.class)
+                        , PendingIntent.FLAG_UPDATE_CURRENT))
+                .setAutoCancel(false);
 
-                if (bundle != null) {
-
-//                    ---retrieve the SMS message received---
-                    try {
-                        Object[] pdus = (Object[]) bundle.get("pdus");
-                        msgs = new SmsMessage[pdus.length];
-                        for (int i = 0; i < msgs.length; i++) {
-                            msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                            msg_from = msgs[i].getOriginatingAddress();
-                            String msgBody = msgs[i].getMessageBody();
-                        }
-                    } catch (Exception e) {
-//                            Log.d("Exception caught",e.getMessage());
-                    }
-                }
-            }
-        }
+        Notification notification = builder.build();
+        NotificationManagerCompat.from(context).notify(13795,notification);
+//        //</editor-fold>
 
 //        read outgoing call
-        else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
+        if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
                 TelephonyManager.EXTRA_STATE_IDLE)) {
 
             @SuppressLint("MissingPermission") Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");

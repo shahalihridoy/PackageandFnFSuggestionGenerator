@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    //<editor-fold desc=" int variables = 5;">
+    //<editor-fold desc="All variable are declared here">
     Database db;
     Cursor c;
     static String operator;
@@ -48,15 +48,36 @@ public class MainActivity extends AppCompatActivity {
     static String currentPackage = "Unknown";
     static String save = "xxx";
 
+    AirtlePackageAnalyser apa;
+    BanglalinkPackageAnalyser bpa;
+    GrameenPhonePackageAnalyzer gpa;
+    RobiPackageAnalyser rpa;
+    TeletalkPackageAnalyser tpa;
+    PackageAnalyser pa;
+
     AlertDialog.Builder builder;
     AlertDialog.Builder chooser;
     Dialog dialog;
-    final Handler handler = new Handler(){
+    //<editor-fold desc="final Handler handler = handleMessage(msg)->{};">
+    final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            chooser.show();
+            switch (msg.what) {
+                case 0:
+                    setData();
+                    dialog.dismiss();
+                    break;
+
+                case 1:
+                    chooser.show();
+                    break;
+
+                default:
+                    break;
+            }
         }
     };
+    //</editor-fold>
 
     protected static Helper bestPackage;
     protected static Helper bestOperator;
@@ -95,8 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(this);
-//            backgroundServiceMarshmallow.startBackgroundService();
+            new Thread() {
+                @Override
+                public void run() {
+                    BackgroundServiceMarshmallow backgroundServiceMarshmallow = new BackgroundServiceMarshmallow(MainActivity.this);
+                    backgroundServiceMarshmallow.startBackgroundService();
+                }
+            }.start();
 
 //        get required data
             if (checkPermission()) {
@@ -104,7 +130,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-            startService(new Intent(this, CallListenerService.class));
+            new Thread() {
+                @Override
+                public void run() {
+                    startService(new Intent(MainActivity.this, CallListenerService.class));
+                }
+            }.start();
             if (checkPermission()) {
                 getData();
             }
@@ -112,6 +143,14 @@ public class MainActivity extends AppCompatActivity {
 
 //        creating database
         db = new Database(getApplicationContext(), "CallLog", null, 13795);
+
+//        instantiate variables
+        apa = new AirtlePackageAnalyser(this);
+        bpa = new BanglalinkPackageAnalyser(this);
+        gpa = new GrameenPhonePackageAnalyzer(this);
+        rpa = new RobiPackageAnalyser(this);
+        tpa = new TeletalkPackageAnalyser(this);
+        pa = new PackageAnalyser(this);
 
     }
 
@@ -214,19 +253,12 @@ public class MainActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(R.layout.progress);
         dialog = builder.create();
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.show();
 
 //        final CustomHandler handler = new CustomHandler(this, dialog, packageName, superfnf, fnfList);
 //        handler.mainActivity = this;
 
-        final Handler handler1 = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                setData();
-                dialog.dismiss();
-            }
-        };
 
 //        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
 //            @Override
@@ -265,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                 dataLoader.insertCallListToDatabase();
                 analyseData();
 //                dataLoader.fakeCallLog();
-                handler1.sendEmptyMessage(0);
+//                handler.sendEmptyMessage(0);
             }
         };
 
@@ -296,7 +328,9 @@ public class MainActivity extends AppCompatActivity {
     private void analyseData() {
 
         operator = getOperator();
-        bestOperator = new PackageAnalyser(MainActivity.this).analysePackage();
+        bestOperator = pa.analysePackage();
+
+        System.out.println(operator);
 
         //<editor-fold desc="analyse best pack based on Operator">
         switch (operator.toUpperCase().charAt(0)) {
@@ -340,11 +374,10 @@ public class MainActivity extends AppCompatActivity {
         return manager.getNetworkOperatorName();
     }
 
-
     void airtel() {
 
 //        analyse best package
-        bestPackage = new AirtlePackageAnalyser(MainActivity.this).analyseAirtel();
+        bestPackage = apa.analyseAirtel();
 
 //        check package
         Thread t = new Thread() {
@@ -388,11 +421,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+//        dismiss dialogue
+        handler.sendEmptyMessage(0);
     }
 
     void gp() {
         //        analyse best package
-        bestPackage = new GrameenPhonePackageAnalyzer(MainActivity.this).analyzeGP();
+        bestPackage = gpa.analyzeGP();
 
 //        check package
         SmsManager smsManager = SmsManager.getDefault();
@@ -406,42 +442,42 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
 //        check how much balance is saved
         String temp = msgbody.toLowerCase();
-        if (temp.contains("bondhu")) {
-            save = Double.toString(GrameenPhonePackageAnalyzer.bondhuHelper.cost).split("\\.")[0];
-        } else if (temp.contains("chinto")) {
-            save = Double.toString(GrameenPhonePackageAnalyzer.nishchintoHelper.cost).split("\\.")[0];
-        } else if (temp.contains("smile")) {
-            save = Double.toString(GrameenPhonePackageAnalyzer.smileHelper.cost).split("\\.")[0];
-        } else if (temp.contains("juice")) {
-            save = Double.toString(GrameenPhonePackageAnalyzer.djuiceHelper.cost).split("\\.")[0];
+        if (temp.charAt(9) == 'B') {
+            save = Double.toString(gpa.bondhuHelper.cost - bestPackage.cost).split("\\.")[0];
+        } else if (temp.charAt(9) == 'N') {
+            save = Double.toString(gpa.nishchintoHelper.cost - bestPackage.cost).split("\\.")[0];
+        } else if (temp.charAt(9) == 'S') {
+            save = Double.toString(gpa.smileHelper.cost - bestPackage.cost).split("\\.")[0];
+        } else if (temp.charAt(9) == 'D') {
+            save = Double.toString(gpa.djuiceHelper.cost - bestPackage.cost).split("\\.")[0];
         }
 
+        handler.sendEmptyMessage(0);
 
 //        check fnf only if the current package is same as best package
-        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
-            smsManager.sendTextMessage("2888", null, "FF", null, null);
-            while (!from.equals("2888")) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-//            when fnf list is received, analyse it
-            for (String number : msgbody.split("\\r?\\n"))
-                if (number != null)
-                    if (number.trim().charAt(0) == '0')
-                        System.out.println(":" + number + ":");
-            System.out.println(msgbody);
-        }
+//        if (msgbody.charAt(9) == bestPackage.packageName.charAt(0)) {
+//            smsManager.sendTextMessage("2888", null, "FF", null, null);
+//            while (!from.equals("GP")) {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+////            when fnf list is received, analyse it
+//            for (String number : msgbody.split("\\r?\\n"))
+//                if (number != null)
+//                    if (number.trim().charAt(0) == '0')
+//                        System.out.println(":" + number + ":");
+//            System.out.println(msgbody);
+//        }
     }
 
     void robi() {
         //        analyse best package
-        bestPackage = new RobiPackageAnalyser(MainActivity.this).analyzeRobi();
+        bestPackage = rpa.analyzeRobi();
 
 //        check package
         SmsManager smsManager = SmsManager.getDefault();
@@ -455,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        save = Double.toString(RobiPackageAnalyser.shorolHelper.cost - bestPackage.cost).split("\\.")[0];
+        save = Double.toString(rpa.shorolHelper.cost - bestPackage.cost).split("\\.")[0];
         System.out.println("Main Activity");
         System.out.println(from + " : " + msgbody);
 
@@ -471,11 +507,14 @@ public class MainActivity extends AppCompatActivity {
             }
             System.out.println(msgbody);
         }
+
+//        dismiss dialogue
+        handler.sendEmptyMessage(0);
     }
 
     void teletalk() {
-        //        analyse best package
-        bestPackage = new TeletalkPackageAnalyser(MainActivity.this).analyseTeletalk();
+//        analyse best package
+        bestPackage = tpa.analyseTeletalk();
 
 //        choose which package you have
         chooser = new AlertDialog.Builder(MainActivity.this);
@@ -487,23 +526,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (packageId[which].charAt(0)) {
                     case 'Y':
-                        save = Double.toString(TeletalkPackageAnalyser.youthHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(tpa.youthHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'P':
-                        save = Double.toString(TeletalkPackageAnalyser.projonmoHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(tpa.projonmoHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'S':
-                        save = Double.toString(TeletalkPackageAnalyser.shadheenHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(tpa.shadheenHelper.cost - bestPackage.cost).split("\\.")[0];
+                        break;
+                    default:
                         break;
                 }
 
-//                update UI in BestPackage
                 currentPackage = packageId[which];
-                BestPackage.setVariable();
+//                setData and dismiss dialogue
+                handler.sendEmptyMessage(0);
             }
         });
 
-        handler.sendEmptyMessage(0);
+        handler.sendEmptyMessage(1);
 
 //        check package
 //        SmsManager smsManager = SmsManager.getDefault();
@@ -537,8 +578,13 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     void banglalink() {
+//        USSDService ussdService = new USSDService();
+//        if(!USSDService.isAccessibilityOn){
+//            USSDService.isAccessibilityOn = true;
+//            startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),5);
+//        }
 //        analyse best package
-        bestPackage = new BanglalinkPackageAnalyser(MainActivity.this).analyseBanglalink();
+        bestPackage = bpa.analyseBanglalink();
 
 //        choose which package you have
         chooser = new AlertDialog.Builder(MainActivity.this);
@@ -550,32 +596,34 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 //                taking the character before the word "package"
                 String s = packageId[which];
-                switch (s.charAt(s.length()-9)) {
+                switch (s.charAt(s.length() - 9)) {
                     case 'y':
-                        save = Double.toString(BanglalinkPackageAnalyser.playHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(bpa.playHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'o':
-                        save = Double.toString(BanglalinkPackageAnalyser.helloHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(bpa.helloHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'f':
-                        save = Double.toString(BanglalinkPackageAnalyser.desh10Helper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(bpa.desh10Helper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'e':
-                        save = Double.toString(BanglalinkPackageAnalyser.deshEkRateHelper.cost - bestPackage.cost).split("\\.")[0];
+                        save = Double.toString(bpa.deshEkRateHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     default:
                         break;
                 }
 
-//                update UI in BestPackage
                 currentPackage = packageId[which];
-                BestPackage.setVariable();
+
+//                send notification to handler to set UI and dismiss dialogue
+                handler.sendEmptyMessage(0);
+//                BestPackage.setVariable();
 
             }
         });
 
-        handler.sendEmptyMessage(0);
-
+//        show chooser
+        handler.sendEmptyMessage(1);
 
 //        long start = System.currentTimeMillis();
 //        while (!from.equals("8822") && (System.currentTimeMillis()-start) < (2*60*1000)){

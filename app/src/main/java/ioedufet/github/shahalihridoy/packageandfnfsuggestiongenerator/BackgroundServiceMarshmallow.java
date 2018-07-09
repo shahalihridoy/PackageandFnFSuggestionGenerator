@@ -22,6 +22,7 @@ import android.provider.CallLog;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,8 +47,9 @@ public class BackgroundServiceMarshmallow extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
 
+        //<editor-fold desc="Notification">
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
-                .setContentTitle("My Title")
+                .setContentTitle("Package & FnF Generator")
                 .setContentText("my content text")
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentIntent(PendingIntent.getActivity(this,
@@ -55,11 +57,10 @@ public class BackgroundServiceMarshmallow extends JobService {
                         new Intent(this,MainActivity.class)
                         ,PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true);
-        NotificationManager nfm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nfm.notify(324,notification.build());
+        NotificationManagerCompat.from(this).notify(13795,notification.build());
+        //</editor-fold>
 
         insertData();
-        Log.d(TAG, "onStartJob: "+this);
         jobFinished(jobParameters, true);
         return true;
     }
@@ -104,7 +105,7 @@ public class BackgroundServiceMarshmallow extends JobService {
     public void startBackgroundService(){
         ComponentName componentName = new ComponentName(context, BackgroundServiceMarshmallow.class);
         JobInfo info = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             info = new JobInfo.Builder(123, componentName)
                     .addTriggerContentUri(new JobInfo.TriggerContentUri(CallLog.Calls.CONTENT_URI
                             , JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
