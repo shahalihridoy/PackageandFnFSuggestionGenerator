@@ -75,6 +75,18 @@ public class RobiPackageAnalyser {
             final_helper = nobannoHelper;
             System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
+
+//        add all the package to a list to show their cost details
+        final_helper.packageList.clear();
+
+        final_helper.packageList.add(megaHelper);
+        final_helper.packageList.add(hoothutHelper);
+        final_helper.packageList.add(clubHelper);
+        final_helper.packageList.add(nobannoHelper);
+        final_helper.packageList.add(shorolHelper);
+        final_helper.packageList.add(noorHelper);
+        final_helper.packageList.add(gotiHelper);
+
         return final_helper;
     }
 

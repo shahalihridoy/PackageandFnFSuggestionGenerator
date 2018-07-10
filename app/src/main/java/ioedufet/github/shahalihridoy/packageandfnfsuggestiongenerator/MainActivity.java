@@ -2,10 +2,12 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -26,6 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
     static String operator;
 
     static String from = "";
-    static String msgbody = "";
+    static String msgbody = "...";
     static String currentPackage = "Unknown";
     static String save = "xxx";
+
+    String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     AirtlePackageAnalyser apa;
     BanglalinkPackageAnalyser bpa;
@@ -111,8 +119,16 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+//        preferences
+        prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        editor = prefs.edit();
 
 //        service for Nougat or onward version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -152,6 +168,28 @@ public class MainActivity extends AppCompatActivity {
         tpa = new TeletalkPackageAnalyser(this);
         pa = new PackageAnalyser(this);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.check:
+//                show chooser
+                handler.sendEmptyMessage(1);
+                break;
+            case R.id.settings:
+                startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 5);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean checkPermission() {
@@ -253,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(R.layout.progress);
         dialog = builder.create();
-        dialog.setCancelable(true);
+        dialog.setCancelable(false);
         dialog.show();
 
 //        final CustomHandler handler = new CustomHandler(this, dialog, packageName, superfnf, fnfList);
@@ -427,7 +465,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void gp() {
-        //        analyse best package
+
+//        analyse best package
         bestPackage = gpa.analyzeGP();
 
 //        check package
@@ -481,19 +520,43 @@ public class MainActivity extends AppCompatActivity {
 
 //        check package
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("8822", null, "P", null, null);
 
-        while (!from.equals("8822")) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+//        save current package to shared preference when it doesn't exist
+        String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if (!prefs.contains("currentPackage")) {
+
+//            send message
+            smsManager.sendTextMessage("8822", null, "P", null, null);
+
+            //<editor-fold desc="wait untill message is received">
+            while (!from.equals("8822")) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            //</editor-fold>
+
+            currentPackage = msgbody.split("\\.")[0];
+
+//            save to preference
+            editor.putString("currentPackage", currentPackage);
+            editor.apply();
+            editor.commit();
+
+        } else {
+            currentPackage = prefs.getString("currentPackage", "Apni Shorol");
         }
 
         save = Double.toString(rpa.shorolHelper.cost - bestPackage.cost).split("\\.")[0];
         System.out.println("Main Activity");
         System.out.println(from + " : " + msgbody);
+
+        currentPackage = msgbody.split("\\.")[0];
 
         if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
 //            check fnf
@@ -507,6 +570,9 @@ public class MainActivity extends AppCompatActivity {
             }
             System.out.println(msgbody);
         }
+
+        for (Helper h : bestPackage.packageList)
+            System.out.println(h.packageName + " : " + (int) Math.round(h.cost));
 
 //        dismiss dialogue
         handler.sendEmptyMessage(0);
@@ -578,11 +644,41 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     void banglalink() {
-//        USSDService ussdService = new USSDService();
-//        if(!USSDService.isAccessibilityOn){
-//            USSDService.isAccessibilityOn = true;
-//            startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),5);
-//        }
+
+        if(!prefs.contains("currentPackage")){
+//        request for accessibility settings
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            if (!USSDService.isAccessibilityOn) {
+                startActivityForResult(intent, 5);
+            }
+//        wait untill accessibility is turned on for ten seconds
+            for (int i=0; i<30 && !USSDService.isAccessibilityOn; i++ ) {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                }
+            }
+
+            String ussdCode = "*999*2" + Uri.encode("#");
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+
+            while (msgbody.charAt(0) != 'Y'){
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+            }
+
+            System.out.println("this is form main activity "+msgbody);
+            currentPackage = msgbody;
+
+            editor.putString("currentPackage",msgbody);
+            editor.apply();
+            editor.commit();
+        } else {
+            currentPackage = prefs.getString("currentPackage","Play Package");
+        }
+
 //        analyse best package
         bestPackage = bpa.analyseBanglalink();
 
@@ -599,14 +695,30 @@ public class MainActivity extends AppCompatActivity {
                 switch (s.charAt(s.length() - 9)) {
                     case 'y':
                         save = Double.toString(bpa.playHelper.cost - bestPackage.cost).split("\\.")[0];
+//            save to preference
+                        editor.putString("currentPackage", packageId[which]);
+                        editor.apply();
+                        editor.commit();
                         break;
                     case 'o':
+//            save to preference
+                        editor.putString("currentPackage", packageId[which]);
+                        editor.apply();
+                        editor.commit();
                         save = Double.toString(bpa.helloHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'f':
+//            save to preference
+                        editor.putString("currentPackage", packageId[which]);
+                        editor.apply();
+                        editor.commit();
                         save = Double.toString(bpa.desh10Helper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'e':
+//            save to preference
+                        editor.putString("currentPackage", packageId[which]);
+                        editor.apply();
+                        editor.commit();
                         save = Double.toString(bpa.deshEkRateHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     default:
@@ -623,8 +735,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 //        show chooser
-        handler.sendEmptyMessage(1);
+//        save current package to shared preference when it doesn't exist
+//        if (!prefs.contains("currentPackage")) {
+//            handler.sendEmptyMessage(1);
+//        } else {
+//            currentPackage = prefs.getString("currentPackage", "Apni Shorol");
+//            handler.sendEmptyMessage(0);
+//        }
 
+        handler.sendEmptyMessage(0);
 //        long start = System.currentTimeMillis();
 //        while (!from.equals("8822") && (System.currentTimeMillis()-start) < (2*60*1000)){
 //            try {
@@ -653,4 +772,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 5) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "you have turned it on", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

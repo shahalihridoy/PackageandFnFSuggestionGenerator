@@ -13,12 +13,12 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 
     <application
@@ -30,7 +30,8 @@
         android:theme="@style/AppTheme">
 
         <!--this is the main activity-->
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,21 +63,24 @@
         <service
             android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.CallListenerService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
-        <service android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceMarshmallow"
+        <service
+            android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceMarshmallow"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- this is for hiding ussd call window -->
-        <service android:name=".USSDService"
+        <service
+            android:name=".USSDService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-        <intent-filter>
-            <action android:name="android.accessibilityservice.AccessibilityService" />
-        </intent-filter>
-        <meta-data android:name="android.accessibilityservice"
-            android:resource="@xml/ussd_accessibility" />
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/ussd_accessibility" />
         </service>
 
     </application>

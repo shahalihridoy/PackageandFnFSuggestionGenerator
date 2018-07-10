@@ -39,6 +39,7 @@ public class USSDService extends AccessibilityService {
 
         System.out.println(text);
         // Handle USSD response here
+        MainActivity.msgbody = text;
 
     }
 

@@ -16,7 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primaryColor"
             app:title="@string/app_name"
-            app:titleTextColor="@color/primaryTextColor"></android.support.v7.widget.Toolbar>
+            app:titleTextColor="@color/primaryTextColor" />
 
 
         <!-- use tabMode="scrollable for more tabs -->
