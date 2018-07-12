@@ -2,6 +2,7 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
@@ -66,6 +67,8 @@ public class USSDService extends AccessibilityService {
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         setServiceInfo(info);
         isAccessibilityOn = true;
+
+        performGlobalBack();
     }
 
     void performGlobalBack(){

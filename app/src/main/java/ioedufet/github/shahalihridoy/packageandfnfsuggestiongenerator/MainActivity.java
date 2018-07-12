@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,11 +47,13 @@ public class MainActivity extends AppCompatActivity {
     Database db;
     Cursor c;
     static String operator;
+    boolean packageAnalysed = true;
+    boolean checkCurrentPackage = false;
 
     static String from = "";
     static String msgbody = "...";
     static String currentPackage = "Unknown";
-    static String save = "xxx";
+    static String save = "...";
 
     String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
     SharedPreferences prefs;
@@ -78,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
 
                 case 1:
                     chooser.show();
+                    break;
+
+                case 2:
+                    Toast.makeText(getBaseContext(), "You haven't turned accessibility on\nThis may cause malfunction", Toast.LENGTH_LONG).show();
+                    break;
+
+                case 3:
+                    Toast.makeText(getBaseContext(), "Please, turn accessibility on", Toast.LENGTH_LONG).show();
                     break;
 
                 default:
@@ -180,8 +191,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.check:
-//                show chooser
-                handler.sendEmptyMessage(1);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        checkCurrentPackage = true;
+                        banglalink();
+                    }
+                }.start();
                 break;
             case R.id.settings:
                 startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 5);
@@ -190,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        listPermissionsNeeded.clear();
+        db.close();
+        super.onDestroy();
     }
 
     private boolean checkPermission() {
@@ -475,22 +498,28 @@ public class MainActivity extends AppCompatActivity {
 
         while (!from.equals("GP")) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
 //        check how much balance is saved
-        String temp = msgbody.toLowerCase();
-        if (temp.charAt(9) == 'B') {
-            save = Double.toString(gpa.bondhuHelper.cost - bestPackage.cost).split("\\.")[0];
-        } else if (temp.charAt(9) == 'N') {
-            save = Double.toString(gpa.nishchintoHelper.cost - bestPackage.cost).split("\\.")[0];
-        } else if (temp.charAt(9) == 'S') {
-            save = Double.toString(gpa.smileHelper.cost - bestPackage.cost).split("\\.")[0];
-        } else if (temp.charAt(9) == 'D') {
-            save = Double.toString(gpa.djuiceHelper.cost - bestPackage.cost).split("\\.")[0];
+        if(!msgbody.contains("...")){
+            String temp = msgbody.toLowerCase();
+            if (temp.charAt(9) == 'B') {
+                currentPackage = gpa.bondhuHelper.packageName;
+                save = Double.toString(gpa.bondhuHelper.cost - bestPackage.cost).split("\\.")[0];
+            } else if (temp.charAt(9) == 'N') {
+                currentPackage = gpa.nishchintoHelper.packageName;
+                save = Double.toString(gpa.nishchintoHelper.cost - bestPackage.cost).split("\\.")[0];
+            } else if (temp.charAt(9) == 'S') {
+                currentPackage = gpa.smileHelper.packageName;
+                save = Double.toString(gpa.smileHelper.cost - bestPackage.cost).split("\\.")[0];
+            } else if (temp.charAt(9) == 'D') {
+                currentPackage = gpa.bondhuHelper.packageName;
+                save = Double.toString(gpa.djuiceHelper.cost - bestPackage.cost).split("\\.")[0];
+            }
         }
 
         handler.sendEmptyMessage(0);
@@ -645,94 +674,34 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     void banglalink() {
 
-        if(!prefs.contains("currentPackage")){
-//        request for accessibility settings
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            if (!USSDService.isAccessibilityOn) {
-                startActivityForResult(intent, 5);
-            }
-//        wait untill accessibility is turned on for ten seconds
-            for (int i=0; i<30 && !USSDService.isAccessibilityOn; i++ ) {
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                }
-            }
-
-            String ussdCode = "*999*2" + Uri.encode("#");
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
-
-            while (msgbody.charAt(0) != 'Y'){
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                }
-            }
-
-            System.out.println("this is form main activity "+msgbody);
-            currentPackage = msgbody;
-
-            editor.putString("currentPackage",msgbody);
-            editor.apply();
-            editor.commit();
-        } else {
-            currentPackage = prefs.getString("currentPackage","Play Package");
+//        checking current package if needed
+        if (!prefs.contains("currentPackage") || checkCurrentPackage) {
+            checkBlPackage();
+            checkCurrentPackage = false;
         }
 
-//        analyse best package
-        bestPackage = bpa.analyseBanglalink();
+        currentPackage = prefs.getString("currentPackage", "Play Package");
 
-//        choose which package you have
-        chooser = new AlertDialog.Builder(MainActivity.this);
-        chooser.setTitle("Choose your current package");
-        final String packageId[] = {"Play Package", "Hello Package", "Desh 10fnf Package", "Desh Ek Rate Package"};
+//        analyse best package for once
+        if (packageAnalysed) {
+            bestPackage = bpa.analyseBanglalink();
+            packageAnalysed = false;
+        }
 
-        chooser.setItems(packageId, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                taking the character before the word "package"
-                String s = packageId[which];
-                switch (s.charAt(s.length() - 9)) {
-                    case 'y':
-                        save = Double.toString(bpa.playHelper.cost - bestPackage.cost).split("\\.")[0];
-//            save to preference
-                        editor.putString("currentPackage", packageId[which]);
-                        editor.apply();
-                        editor.commit();
-                        break;
-                    case 'o':
-//            save to preference
-                        editor.putString("currentPackage", packageId[which]);
-                        editor.apply();
-                        editor.commit();
-                        save = Double.toString(bpa.helloHelper.cost - bestPackage.cost).split("\\.")[0];
-                        break;
-                    case 'f':
-//            save to preference
-                        editor.putString("currentPackage", packageId[which]);
-                        editor.apply();
-                        editor.commit();
-                        save = Double.toString(bpa.desh10Helper.cost - bestPackage.cost).split("\\.")[0];
-                        break;
-                    case 'e':
-//            save to preference
-                        editor.putString("currentPackage", packageId[which]);
-                        editor.apply();
-                        editor.commit();
-                        save = Double.toString(bpa.deshEkRateHelper.cost - bestPackage.cost).split("\\.")[0];
-                        break;
-                    default:
-                        break;
-                }
-
-                currentPackage = packageId[which];
-
-//                send notification to handler to set UI and dismiss dialogue
-                handler.sendEmptyMessage(0);
-//                BestPackage.setVariable();
-
-            }
-        });
+//        check savings
+        String s = currentPackage.toLowerCase();
+        if (s.contains("play"))
+            save = Long.toString(Math.round(bpa.playHelper.cost - bestPackage.cost));
+        else if (s.contains("hello"))
+            save = Long.toString(Math.round(bpa.helloHelper.cost - bestPackage.cost));
+        else if (s.contains("10"))
+            save = Long.toString(Math.round(bpa.desh10Helper.cost - bestPackage.cost));
+        else if (s.contains("desh"))
+            save = Long.toString(Math.round(bpa.deshEkRateHelper.cost - bestPackage.cost));
+        else if (s.contains("4"))
+            save = Long.toString(Math.round(bpa.businessHelper.cost - bestPackage.cost));
+        else
+            save = Long.toString(Math.round(bpa.deshEkRateHelper.cost - bestPackage.cost));
 
 //        show chooser
 //        save current package to shared preference when it doesn't exist
@@ -742,7 +711,6 @@ public class MainActivity extends AppCompatActivity {
 //            currentPackage = prefs.getString("currentPackage", "Apni Shorol");
 //            handler.sendEmptyMessage(0);
 //        }
-
         handler.sendEmptyMessage(0);
 //        long start = System.currentTimeMillis();
 //        while (!from.equals("8822") && (System.currentTimeMillis()-start) < (2*60*1000)){
@@ -772,12 +740,47 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 5) {
-            if (resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "you have turned it on", Toast.LENGTH_LONG).show();
+    @SuppressLint("MissingPermission")
+    void checkBlPackage() {
+
+//        request for accessibility settings
+        if (!USSDService.isAccessibilityOn) {
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivityForResult(intent, 5);
+
+//            show notification to trun on accessibility
+            handler.sendEmptyMessage(3);
+
+//        wait untill accessibility is turned on for ten seconds
+            for (int i = 0; i < 30 && !USSDService.isAccessibilityOn; i++) {
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                }
             }
         }
+
+//        if still accessiblity is off
+        if (!USSDService.isAccessibilityOn) {
+            handler.sendEmptyMessage(2);
+        } else {
+            String ussdCode = "*999*2" + Uri.encode("#");
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+
+            while (msgbody.charAt(0) != 'Y') {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+            }
+
+            System.out.println("this is form main activity " + msgbody);
+            currentPackage = msgbody;
+
+            editor.putString("currentPackage", msgbody);
+            editor.apply();
+            editor.commit();
+        }
     }
+
 }
