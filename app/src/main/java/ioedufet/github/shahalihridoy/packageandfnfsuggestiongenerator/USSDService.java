@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -16,10 +17,8 @@ public class USSDService extends AccessibilityService {
     public static String TAG = USSDService.class.getSimpleName();
     List<CharSequence> eventText;
     static boolean isAccessibilityOn = false;
-
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-
         AccessibilityNodeInfo source = event.getSource();
         /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {

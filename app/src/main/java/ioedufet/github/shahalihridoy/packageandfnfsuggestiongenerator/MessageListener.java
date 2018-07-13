@@ -3,6 +3,7 @@ package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -13,34 +14,39 @@ import android.widget.Toast;
 public class MessageListener extends BroadcastReceiver {
 
     String messageBody;
+    String from;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         messageBody = "";
 
+
         if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
                 for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
 //                    getting the full message by appending pars
                     messageBody += smsMessage.getMessageBody();
-                    MainActivity.from = smsMessage.getOriginatingAddress();
+                    from = smsMessage.getOriginatingAddress();
                 }
 
                 MainActivity.msgbody = messageBody;
-
+                MainActivity.from = from;
                 System.out.println(messageBody);
-                
+
 //            when fnf list is received, analyse it
                 for (String number : messageBody.split("\\r?\\n"))
-                    if (number != null)
-                        if (number.trim().charAt(0) == '0')
+                    if (!number.equals("")) {
+                        number = number.trim();
+                        if (number.charAt(0) == '0')
                             System.out.println(":" + number + ":");
+                    }
 
             } else {
                 Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
                 SmsMessage[] msgs = null;
-                String msg_from;
+                String msg_from = "";
 
                 if (bundle != null) {
 
@@ -56,9 +62,26 @@ public class MessageListener extends BroadcastReceiver {
                         }
                         MainActivity.msgbody = messageBody;
                     } catch (Exception e) {
-                        Toast.makeText(context,"Couldn't read message",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Couldn't read message", Toast.LENGTH_LONG).show();
                     }
                 }
+
+                from = msg_from;
+            }
+
+            messageBody = messageBody.toLowerCase();
+
+            if (from.equals("GP") && (messageBody.contains("ondhu") || messageBody.contains("chinto") || messageBody.contains("smile") || messageBody.contains("juice"))) {
+
+                final String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
+                SharedPreferences prefs = context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+//            save to preference
+                editor.putString("currentPackage", messageBody);
+                editor.apply();
+                editor.commit();
+
             }
         }
     }

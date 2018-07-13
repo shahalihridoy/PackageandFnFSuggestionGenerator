@@ -14,12 +14,12 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,44 +29,43 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--this is the main activity-->
+        <!-- this is the main activity -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!-- as phone state reading is an action, it is inserted inside application -->
-        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.PhoneListener">
+        <receiver android:name=".PhoneListener">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".MessageListener">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
-        <!--when the phone is booted then this will run the service-->
-        <receiver android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.ServiceWaker">
+        <!-- when the phone is booted then this will run the service -->
+        <receiver android:name=".ServiceWaker">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <!--this service will run in background even if the app is closed-->
+        <!-- this service will run in background even if the app is closed -->
         <service
-            android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.CallListenerService"
+            android:name=".CallListenerService"
             android:enabled="true"
             android:exported="true" />
-
         <service
-            android:name="ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator.BackgroundServiceMarshmallow"
+            android:name=".BackgroundServiceMarshmallow"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -78,11 +77,15 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/ussd_accessibility" />
         </service>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

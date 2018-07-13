@@ -6,6 +6,22 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+
+        <item name="android:actionOverflowButtonStyle">@style/actionMenuStyle</item>
+
+        <!--<item name="android:itemTextAppearance">@style/colorText</item>-->
+        <!--<item name="android:itemBackground">@color/primaryColor</item>-->
     </style>
+
+    <style name="actionMenuStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <!--<item name="android:textColor">@color/primaryTextColor</item>-->
+        <item name="android:tint">@color/primaryTextColor</item>
+        <!--<item name="android:src">@drawable/action_menu_icon</item>-->
+        <!--<item name="android:contentDescription">md shah ali</item>-->
+    </style>
+
+    <!--<style name="colorText" parent="@style/Base.TextAppearance.AppCompat.Title">-->
+        <!--<item name="android:textColor">#ffffff</item>-->
+    <!--</style>-->
 
 </resources>

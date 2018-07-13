@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     static String currentPackage = "Unknown";
     static String save = "...";
 
-    String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
+    static final String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
@@ -89,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
 
                 case 3:
                     Toast.makeText(getBaseContext(), "Please, turn accessibility on", Toast.LENGTH_LONG).show();
+                    break;
+
+                case 4:
+                    dialog.show();
                     break;
 
                 default:
@@ -191,16 +195,28 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.check:
+
                 new Thread() {
                     @Override
                     public void run() {
+
+//                        show dialogue
+                        handler.sendEmptyMessage(4);
                         checkCurrentPackage = true;
-                        banglalink();
+                        analyseData(); // for all pacakge
                     }
                 }.start();
                 break;
             case R.id.settings:
-                startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 5);
+                new Thread() {
+                    @Override
+                    public void run() {
+//                        Toast.makeText(getBaseContext(),"You clicked on this",Toast.LENGTH_LONG).show();
+                        startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 5);
+//                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                    }
+                }.start();
+
                 break;
             default:
                 break;
@@ -438,50 +454,86 @@ public class MainActivity extends AppCompatActivity {
     void airtel() {
 
 //        analyse best package
-        bestPackage = apa.analyseAirtel();
-
-//        check package
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-
-                String ussdCode = "*121*2*1*1" + Uri.encode("#");
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
-            }
-        };
-
-        t.start();
-
-//        wait untill message is received
-        while (!from.equals("8822")) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (packageAnalysed) {
+            bestPackage = apa.analyseAirtel();
+            packageAnalysed = false;
         }
 
-        currentPackage = msgbody;
+        if (!prefs.contains("currentPackage") || checkCurrentPackage) {
 
-        System.out.println("Main Activity");
-        System.out.println(from + " : " + msgbody);
+            //        check package
+            Thread t = new Thread() {
+                @Override
+                public void run() {
 
-//        check fnf
-        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
+                    String ussdCode = "*121*2*1*1" + Uri.encode("#");
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
+                }
+            };
 
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage("8363", null, "F", null, null);
-            while (!from.equals("8363")) {
+            t.start();
+
+            //<editor-fold desc="wait untill message is received">
+            while (!from.equals("8822")) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            //</editor-fold>
+
+//            save to preference
+            editor.putString("currentPackage", msgbody);
+            editor.apply();
+            editor.commit();
+
+            checkCurrentPackage = false;
+
         }
+
+        currentPackage = prefs.getString("currentPackage", "Shobai Ek");
+
+//        check savings
+        String s = currentPackage.toLowerCase();
+        if (s.contains("golpo"))
+            save = Long.toString(Math.round(apa.golpoHelper.cost - bestPackage.cost));
+        else if (s.contains("adda"))
+            save = Long.toString(Math.round(apa.addaHelper.cost - bestPackage.cost));
+        else if (s.contains("super"))
+            save = Long.toString(Math.round(apa.superAddaHelper.cost - bestPackage.cost));
+        else if (s.contains("dosti"))
+            save = Long.toString(Math.round(apa.dostiHelper.cost - bestPackage.cost));
+        else if (s.contains("kotha"))
+            save = Long.toString(Math.round(apa.kothaHelper.cost - bestPackage.cost));
+        else if (s.contains("shobai fnf"))
+            save = Long.toString(Math.round(apa.shobaiFnf.cost - bestPackage.cost));
+        else if (s.contains("shobai ek"))
+            save = Long.toString(Math.round(apa.shobaiEk.cost - bestPackage.cost));
+        else if (s.contains("foorti"))
+            save = Long.toString(Math.round(apa.foortiHelper.cost - bestPackage.cost));
+        else if (s.contains("hoichoi"))
+            save = Long.toString(Math.round(apa.hoichoiHelper.cost - bestPackage.cost));
+        else
+            save = Long.toString(Math.round(apa.shobaiEk.cost - bestPackage.cost));
+
+
+////        check fnf
+//        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
+//
+//            SmsManager smsManager = SmsManager.getDefault();
+//            smsManager.sendTextMessage("8363", null, "F", null, null);
+//            while (!from.equals("8363")) {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
 //        dismiss dialogue
         handler.sendEmptyMessage(0);
@@ -490,37 +542,63 @@ public class MainActivity extends AppCompatActivity {
     void gp() {
 
 //        analyse best package
-        bestPackage = gpa.analyzeGP();
-
-//        check package
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("4444", null, "P", null, null);
-
-        while (!from.equals("GP")) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (packageAnalysed) {
+            bestPackage = gpa.analyzeGP();
+            packageAnalysed = false;
         }
 
-//        check how much balance is saved
-        if(!msgbody.contains("...")){
-            String temp = msgbody.toLowerCase();
-            if (temp.charAt(9) == 'B') {
-                currentPackage = gpa.bondhuHelper.packageName;
-                save = Double.toString(gpa.bondhuHelper.cost - bestPackage.cost).split("\\.")[0];
-            } else if (temp.charAt(9) == 'N') {
-                currentPackage = gpa.nishchintoHelper.packageName;
-                save = Double.toString(gpa.nishchintoHelper.cost - bestPackage.cost).split("\\.")[0];
-            } else if (temp.charAt(9) == 'S') {
-                currentPackage = gpa.smileHelper.packageName;
-                save = Double.toString(gpa.smileHelper.cost - bestPackage.cost).split("\\.")[0];
-            } else if (temp.charAt(9) == 'D') {
-                currentPackage = gpa.bondhuHelper.packageName;
-                save = Double.toString(gpa.djuiceHelper.cost - bestPackage.cost).split("\\.")[0];
+        if (!prefs.contains("currentPackage") || checkCurrentPackage) {
+
+            //        check package
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+
+//                    check package
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage("4444", null, "P", null, null);
+
+                }
+            };
+
+            t.start();
+
+            int counter = 0;
+            //<editor-fold desc="wait untill message is received">
+            while (!from.equals("GP") && counter < 60) {
+                try {
+                    Thread.sleep(2000);
+                    counter++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            //</editor-fold>
+
+//            save to preference
+            editor.putString("currentPackage", msgbody);
+            editor.apply();
+            editor.commit();
+
+            checkCurrentPackage = false;
+
         }
+
+        currentPackage = prefs.getString("currentPackage", "Bondhu");
+
+//        check savings
+        String s = currentPackage.toLowerCase();
+        if (s.contains("ondhu"))
+            save = Long.toString(Math.round(gpa.bondhuHelper.cost - bestPackage.cost));
+        else if (s.contains("smile"))
+            save = Long.toString(Math.round(gpa.smileHelper.cost - bestPackage.cost));
+        else if (s.contains("chint"))
+            save = Long.toString(Math.round(gpa.nishchintoHelper.cost - bestPackage.cost));
+        else if (s.contains("juice"))
+            save = Long.toString(Math.round(gpa.djuiceHelper.cost - bestPackage.cost));
+        else
+            save = Long.toString(Math.round(gpa.nishchintoHelper.cost - bestPackage.cost));
+
 
         handler.sendEmptyMessage(0);
 
@@ -544,20 +622,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void robi() {
-        //        analyse best package
-        bestPackage = rpa.analyzeRobi();
 
-//        check package
-        SmsManager smsManager = SmsManager.getDefault();
+//        analyse best package
+        if (packageAnalysed) {
+            bestPackage = rpa.analyzeRobi();
+            packageAnalysed = false;
+        }
 
-//        save current package to shared preference when it doesn't exist
-        String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        if (!prefs.contains("currentPackage") || checkCurrentPackage) {
 
-        if (!prefs.contains("currentPackage")) {
+            //        check package
+            SmsManager smsManager = SmsManager.getDefault();
 
-//            send message
             smsManager.sendTextMessage("8822", null, "P", null, null);
 
             //<editor-fold desc="wait untill message is received">
@@ -570,35 +646,48 @@ public class MainActivity extends AppCompatActivity {
             }
             //</editor-fold>
 
-            currentPackage = msgbody.split("\\.")[0];
-
 //            save to preference
-            editor.putString("currentPackage", currentPackage);
+            editor.putString("currentPackage", msgbody);
             editor.apply();
             editor.commit();
 
-        } else {
-            currentPackage = prefs.getString("currentPackage", "Apni Shorol");
+            checkCurrentPackage = false;
+
         }
 
-        save = Double.toString(rpa.shorolHelper.cost - bestPackage.cost).split("\\.")[0];
-        System.out.println("Main Activity");
-        System.out.println(from + " : " + msgbody);
+        currentPackage = prefs.getString("currentPackage", "Shorol");
 
-        currentPackage = msgbody.split("\\.")[0];
+//        check savings
+        String s = currentPackage.toLowerCase();
+        if (s.contains("shorol"))
+            save = Long.toString(Math.round(rpa.shorolHelper.cost - bestPackage.cost));
+        else if (s.contains("goti"))
+            save = Long.toString(Math.round(rpa.gotiHelper.cost - bestPackage.cost));
+        else if (s.contains("noor"))
+            save = Long.toString(Math.round(rpa.noorHelper.cost - bestPackage.cost));
+        else if (s.contains("club"))
+            save = Long.toString(Math.round(rpa.clubHelper.cost - bestPackage.cost));
+        else if (s.contains("nobanno"))
+            save = Long.toString(Math.round(rpa.nobannoHelper.cost - bestPackage.cost));
+        else if (s.contains("hoot"))
+            save = Long.toString(Math.round(rpa.hoothutHelper.cost - bestPackage.cost));
+        else if (s.contains("mega"))
+            save = Long.toString(Math.round(rpa.megaHelper.cost - bestPackage.cost));
+        else
+            save = Long.toString(Math.round(rpa.shorolHelper.cost - bestPackage.cost));
 
-        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
-//            check fnf
-            smsManager.sendTextMessage("8363", null, "F", null, null);
-            while (!from.equals("8363")) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println(msgbody);
-        }
+//        if (msgbody.substring(0, 4).equals(bestPackage.packageName.substring(0, 4))) {
+////            check fnf
+//            smsManager.sendTextMessage("8363", null, "F", null, null);
+//            while (!from.equals("8363")) {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            System.out.println(msgbody);
+//        }
 
         for (Helper h : bestPackage.packageList)
             System.out.println(h.packageName + " : " + (int) Math.round(h.cost));
@@ -745,6 +834,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        request for accessibility settings
         if (!USSDService.isAccessibilityOn) {
+
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             startActivityForResult(intent, 5);
 
