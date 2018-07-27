@@ -79,13 +79,13 @@ public class RobiPackageAnalyser {
 //        add all the package to a list to show their cost details
         final_helper.packageList.clear();
 
-        final_helper.packageList.add(megaHelper);
-        final_helper.packageList.add(hoothutHelper);
-        final_helper.packageList.add(clubHelper);
-        final_helper.packageList.add(nobannoHelper);
-        final_helper.packageList.add(shorolHelper);
-        final_helper.packageList.add(noorHelper);
-        final_helper.packageList.add(gotiHelper);
+        final_helper.packageList.add(new CostHelper(megaHelper.packageName,megaHelper.cost));
+        final_helper.packageList.add(new CostHelper(hoothutHelper.packageName,hoothutHelper.cost));
+        final_helper.packageList.add(new CostHelper(clubHelper.packageName,clubHelper.cost));
+        final_helper.packageList.add(new CostHelper(nobannoHelper.packageName,nobannoHelper.cost));
+        final_helper.packageList.add(new CostHelper(shorolHelper.packageName,shorolHelper.cost));
+        final_helper.packageList.add(new CostHelper(noorHelper.packageName,noorHelper.cost));
+        final_helper.packageList.add(new CostHelper(gotiHelper.packageName,gotiHelper.cost));
 
         return final_helper;
     }

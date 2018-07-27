@@ -9,4 +9,6 @@
   <color name="secondaryLightColor">#74ff79</color>
   <color name="secondaryDarkColor">#00b304</color>
   <color name="secondaryTextColor">#000000</color>
+
+  <color name="lightGray">#eeeeee</color>
 </resources>

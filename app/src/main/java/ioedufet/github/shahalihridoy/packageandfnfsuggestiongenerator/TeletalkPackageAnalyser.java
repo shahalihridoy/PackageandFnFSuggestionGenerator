@@ -48,6 +48,11 @@ public class TeletalkPackageAnalyser {
             final_helper = shadheenHelper;
             System.out.println(shadheenHelper.packageName + ": " + shadheenHelper.cost);
         }
+
+        final_helper.packageList.add(new CostHelper(youthHelper.packageName,youthHelper.cost));
+        final_helper.packageList.add(new CostHelper(projonmoHelper.packageName,projonmoHelper.cost));
+        final_helper.packageList.add(new CostHelper(shadheenHelper.packageName,shadheenHelper.cost));
+
         return final_helper;
     }
 

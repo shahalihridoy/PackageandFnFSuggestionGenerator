@@ -57,6 +57,11 @@ public class GrameenPhonePackageAnalyzer {
             System.out.println(final_helper.packageName+": "+final_helper.cost);
         }
 
+        final_helper.packageList.add(new CostHelper(bondhuHelper.packageName,bondhuHelper.cost));
+        final_helper.packageList.add(new CostHelper(nishchintoHelper.packageName,nishchintoHelper.cost));
+        final_helper.packageList.add(new CostHelper(smileHelper.packageName,smileHelper.cost));
+        final_helper.packageList.add(new CostHelper(djuiceHelper.packageName,djuiceHelper.cost));
+
         return final_helper;
     }
 

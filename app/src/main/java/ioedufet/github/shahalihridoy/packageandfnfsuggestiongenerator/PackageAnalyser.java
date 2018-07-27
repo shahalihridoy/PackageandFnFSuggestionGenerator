@@ -42,6 +42,14 @@ public class PackageAnalyser {
             min = teletalkHelper.cost;
             helper = teletalkHelper;
         }
+
+        helper.packageList.clear();
+        helper.packageList.add(new CostHelper(airtelHelper.operator,airtelHelper.cost));
+        helper.packageList.add(new CostHelper(blhelper.operator,blhelper.cost));
+        helper.packageList.add(new CostHelper(gphelper.operator,gphelper.cost));
+        helper.packageList.add(new CostHelper(robihelper.operator,robihelper.cost));
+        helper.packageList.add(new CostHelper(teletalkHelper.operator,teletalkHelper.cost));
+
         return helper;
     }
 }

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.CallLog;
@@ -27,6 +28,7 @@ public class DataLoader extends Activity {
     Database db;
     Boolean isGranted = false;
 
+    static final String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
 
     public DataLoader(Context context, Activity activity) {
         this.context = context;
@@ -34,7 +36,7 @@ public class DataLoader extends Activity {
     }
 
     @SuppressLint("MissingPermission")
-    public void insertCallListToDatabase(){
+    public void insertCallListToDatabase() {
 
         db = new Database(context, "CallLog", null, 13795);
         cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
@@ -48,9 +50,16 @@ public class DataLoader extends Activity {
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
         int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);
 
-//        cursor.moveToFirst();
+//        save the first call date into preference
+        cursor.moveToFirst();
+        SharedPreferences prefs = context.getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("startDate",cursor.getString(date));
+        editor.apply();
+        editor.commit();
 
-        while (cursor.moveToNext()) {
+        cursor.moveToFirst();
+        do {
             String phNumber = cursor.getString(number);
             String callType = cursor.getString(type);
             String callDate = cursor.getString(date);
@@ -77,7 +86,7 @@ public class DataLoader extends Activity {
 //            System.out.println(phNumber);
 //            System.out.println(callDuration);
 //            System.out.println(new SimpleDateFormat("HH:mm").format(callDayTime));
-        }
+        } while (cursor.moveToNext());
         cursor.close();
     }
 
@@ -98,31 +107,28 @@ public class DataLoader extends Activity {
 //        cursor.close();
 //    }
 
-
     Random random = new Random();
-    String[] operator = {"017","018","016","019","015"};
+    String[] operator = {"017", "018", "016", "019", "015"};
     StringBuilder fakeDate = new StringBuilder(); // 6 digit should be added to this
     int opNo; //operator number
     String fakeNumber = "";
     String fakeDuration = "";
 
-    public void fakeCallLog(){
+    public void fakeCallLog() {
 
 //        insertPlaceholderCall(context,context.getContentResolver(),"01763413041","3000",1545765415102L,2);
 
-        for(int i=0;i<50;i++){
-            fakeDate.delete(0,fakeDate.length());
-            fakeDate.append("1445"+Integer.toString(random.nextInt(899999999)+100000000));
+        for (int i = 0; i < 50; i++) {
+            fakeDate.delete(0, fakeDate.length());
+            fakeDate.append("1445" + Integer.toString(random.nextInt(899999999) + 100000000));
             opNo = random.nextInt(4);
-            fakeNumber = operator[opNo]+Integer.toString(random.nextInt(899999)+100000)+Integer.toString(random.nextInt(90)+10);
-            fakeDuration = Integer.toString(random.nextInt(600)+60);
+            fakeNumber = operator[opNo] + Integer.toString(random.nextInt(899999) + 100000) + Integer.toString(random.nextInt(90) + 10);
+            fakeDuration = Integer.toString(random.nextInt(600) + 60);
 
-            insertPlaceholderCall(context,context.getContentResolver(),fakeNumber,fakeDuration,Long.parseLong(fakeDate.toString()),2);
-            System.out.println("Fake Call Log: "+fakeNumber+" , "+fakeDuration+" , "+ new SimpleDateFormat("HH:mm").format(Long.parseLong(fakeDate.toString())));
+            insertPlaceholderCall(context, context.getContentResolver(), fakeNumber, fakeDuration, Long.parseLong(fakeDate.toString()), 2);
+            System.out.println("Fake Call Log: " + fakeNumber + " , " + fakeDuration + " , " + new SimpleDateFormat("HH:mm").format(Long.parseLong(fakeDate.toString())));
         }
     }
-
-
 
 
     @SuppressLint("MissingPermission")
@@ -140,7 +146,7 @@ public class DataLoader extends Activity {
         try {
             contentResolver.insert(CallLog.Calls.CONTENT_URI, values);
 //            System.out.println(number);
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 

@@ -27,6 +27,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.CellInfo;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -405,7 +406,10 @@ public class MainActivity extends AppCompatActivity {
     private void analyseData() {
 
         operator = getOperator();
-        bestOperator = pa.analysePackage();
+
+//        analyse for only once
+        if (packageAnalysed)
+            bestOperator = pa.analysePackage();
 
         System.out.println(operator);
 
@@ -689,16 +693,16 @@ public class MainActivity extends AppCompatActivity {
 //            System.out.println(msgbody);
 //        }
 
-        for (Helper h : bestPackage.packageList)
-            System.out.println(h.packageName + " : " + (int) Math.round(h.cost));
-
 //        dismiss dialogue
         handler.sendEmptyMessage(0);
     }
 
     void teletalk() {
 //        analyse best package
-        bestPackage = tpa.analyseTeletalk();
+        if (packageAnalysed) {
+            bestPackage = tpa.analyseTeletalk();
+            packageAnalysed = false;
+        }
 
 //        choose which package you have
         chooser = new AlertDialog.Builder(MainActivity.this);
@@ -710,12 +714,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (packageId[which].charAt(0)) {
                     case 'Y':
+                        currentPackage = tpa.youthHelper.packageName;
                         save = Double.toString(tpa.youthHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'P':
+                        currentPackage = tpa.projonmoHelper.packageName;
                         save = Double.toString(tpa.projonmoHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     case 'S':
+                        currentPackage = tpa.shadheenHelper.packageName;
                         save = Double.toString(tpa.shadheenHelper.cost - bestPackage.cost).split("\\.")[0];
                         break;
                     default:
@@ -723,7 +730,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 currentPackage = packageId[which];
-//                setData and dismiss dialogue
+//                setData and dismiss loading dialogue
                 handler.sendEmptyMessage(0);
             }
         });

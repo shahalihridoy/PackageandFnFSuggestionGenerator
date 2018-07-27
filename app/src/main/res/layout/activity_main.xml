@@ -29,7 +29,7 @@
             app:tabGravity="fill"
             app:tabPaddingEnd="-1dp"
             app:tabPaddingStart="-1dp"
-            app:tabSelectedTextColor="@color/secondaryLightColor"
+            app:tabSelectedTextColor="@color/secondaryColor"
             app:tabTextColor="@color/primaryTextColor"></android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 

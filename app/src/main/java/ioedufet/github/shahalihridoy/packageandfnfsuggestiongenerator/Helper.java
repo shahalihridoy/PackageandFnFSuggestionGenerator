@@ -6,7 +6,7 @@ import java.util.List;
 public class Helper {
     String superFnf = "Not Applicable";
     ArrayList<String> fnf = new ArrayList<String>();
-    List<Helper> packageList = new ArrayList<Helper>();
+    List<CostHelper> packageList = new ArrayList<CostHelper>();
     String packageName = "";
     String operator="";
     String code;

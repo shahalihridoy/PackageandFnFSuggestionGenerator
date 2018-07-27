@@ -1,11 +1,13 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AirtlePackageAnalyser {
@@ -15,6 +17,9 @@ public class AirtlePackageAnalyser {
     double min = 99999999.0;
     String packageName = null;
     Helper final_helper;
+
+    static final String MY_PREFS_NAME = "Package & FnF Suggestion Generator";
+    SharedPreferences prefs;
 
     Helper golpoHelper = new Helper("Golpo","Airtel","*121*82"); //add # after code
     Helper addaHelper = new Helper("Adda","Airtel","*121*81");
@@ -30,6 +35,7 @@ public class AirtlePackageAnalyser {
     public AirtlePackageAnalyser(Context context) {
         db = new Database(context, "CallLog", null, 13795);
         this.context = context;
+        prefs = context.getSharedPreferences(MY_PREFS_NAME,Context.MODE_PRIVATE);
     }
 
     public Helper analyseAirtel() {
@@ -41,6 +47,7 @@ public class AirtlePackageAnalyser {
 
         tenSecondPulsePackageAnalysis();
         oneSecondPulsePackageAnalysis();
+        shobaiFnf();
 
         if (golpoHelper.cost < min) {
             min = golpoHelper.cost;
@@ -87,7 +94,46 @@ public class AirtlePackageAnalyser {
             final_helper = shobaiFnf;
             System.out.println(final_helper.packageName + ": " + final_helper.cost);
         }
+
+        final_helper.packageList.add(new CostHelper(addaHelper.packageName,addaHelper.cost));
+        final_helper.packageList.add(new CostHelper(dostiHelper.packageName,dostiHelper.cost));
+        final_helper.packageList.add(new CostHelper(foortiHelper.packageName,foortiHelper.cost));
+        final_helper.packageList.add(new CostHelper(golpoHelper.packageName,golpoHelper.cost));
+        final_helper.packageList.add(new CostHelper(hoichoiHelper.packageName,hoichoiHelper.cost));
+        final_helper.packageList.add(new CostHelper(kothaHelper.packageName,kothaHelper.cost));
+        final_helper.packageList.add(new CostHelper(superAddaHelper.packageName,superAddaHelper.cost));
+        final_helper.packageList.add(new CostHelper(shobaiEk.packageName,shobaiEk.cost));
+        final_helper.packageList.add(new CostHelper(shobaiFnf.packageName,shobaiFnf.cost));
+
         return final_helper;
+    }
+
+    private void shobaiFnf() {
+        c = db.rawData();
+        Long duration = (new Date().getTime() - Long.parseLong(prefs.getString("startDate","0")))/(1000*60*60*24);
+        Long cost1 = duration*7*26;
+        Long cost2 = duration*15*24;
+        if(c.getCount()>0){
+            c.moveToFirst();
+            do {
+
+//                shobai ek
+                shobaiEk.cost += Double.valueOf(c.getString(1)) * 1 / 100;
+
+//                shobai fnf
+                if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
+                    shobaiFnf.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
+                } else shobaiFnf.cost += Double.valueOf(c.getString(1)) * 1 / 100;
+
+            }while (c.moveToNext());
+        }
+
+//        here cost is fixed and obvious for user
+        if(cost1 > shobaiFnf.cost)
+            shobaiFnf.cost = cost1;
+        if(cost2 > shobaiEk.cost)
+            shobaiEk.cost = cost2;
+
     }
 
     public void tenSecondPulsePackageAnalysis() {
@@ -95,7 +141,6 @@ public class AirtlePackageAnalyser {
         if (c.getCount() > 0) {
             c.moveToFirst();
             do {
-
 //                golpo pack
                 golpoHelper.cost += Double.valueOf(c.getString(1)) * 16.67 / 1000;
 
@@ -178,14 +223,6 @@ public class AirtlePackageAnalyser {
                 if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
                     kothaHelper.cost += Double.valueOf(c.getString(1)) * 1.65 / 100;
                 } else kothaHelper.cost += Double.valueOf(c.getString(1)) * 2.15 / 100;
-
-//                shobai ek
-                shobaiEk.cost += Double.valueOf(c.getString(1)) * 1.2 / 100;
-
-//                shobai fnf
-                if (c.getString(0).charAt(2) == '8' || c.getString(0).charAt(2) == '6') {
-                    shobaiFnf.cost += Double.valueOf(c.getString(1)) * 0.5 / 100;
-                } else shobaiFnf.cost += Double.valueOf(c.getString(1)) * 1 / 100;
 
             } while (c.moveToNext());
         }

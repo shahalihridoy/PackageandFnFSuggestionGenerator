@@ -1,8 +1,10 @@
 package ioedufet.github.shahalihridoy.packageandfnfsuggestiongenerator;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.IntentService;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -78,42 +80,46 @@ public class CustomAdapter extends BaseAdapter {
         if (fnf.get(position).charAt(0) == 'N')
             helper.addFnF.setVisibility(View.INVISIBLE);
 
-//            when fnf is already added, delete this from the bestpackage fnf list
-        else if (MainActivity.msgbody.contains(fnf.get(position)))
-            helper.addFnF.setText("ADDED");
-
         else
             helper.addFnF.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //<editor-fold desc="Send sms for fnf setup">
-                    try {
-                        SmsManager smsManager = SmsManager.getDefault();
-                        switch (MainActivity.operator.toUpperCase().charAt(0)) {
-                            case 'A':
-                                smsManager.sendTextMessage("8363", null, "ADD "+fnf.get(position), null, null);
-                                helper.addFnF.setVisibility(View.INVISIBLE);
-                                break;
-                            case 'G':
-                                smsManager.sendTextMessage("2888", null, fnf.get(position), null, null);
-                                helper.addFnF.setVisibility(View.INVISIBLE);
-                                break;
-                            case 'R':
-                                smsManager.sendTextMessage("8363", null, "A "+fnf.get(position), null, null);
-                                helper.addFnF.setVisibility(View.INVISIBLE);
-                                break;
-                            case 'B':
-                                smsManager.sendTextMessage("3300", null, "add "+fnf.get(position), null, null);
-                                helper.addFnF.setVisibility(View.INVISIBLE);
-                                break;
-                            case 'T':
-                                smsManager.sendTextMessage("363", null,"reg", null, null);
-                                smsManager.sendTextMessage("363", null, "add "+fnf.get(position), null, null);
-                                helper.addFnF.setVisibility(View.INVISIBLE);
-                                break;
-                            default:
-                                break;
-                        }
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setTitle("Confirmation");
+                    dialog.setMessage("Would you like to add "+fnf.get(position)+" to your FnF list ?");
+
+                    dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //<editor-fold desc="Send sms for fnf setup">
+                            try {
+                                SmsManager smsManager = SmsManager.getDefault();
+                                switch (MainActivity.operator.toUpperCase().charAt(0)) {
+                                    case 'A':
+                                        smsManager.sendTextMessage("8363", null, "ADD "+fnf.get(position), null, null);
+                                        helper.addFnF.setVisibility(View.INVISIBLE);
+                                        break;
+                                    case 'G':
+                                        smsManager.sendTextMessage("2888", null, fnf.get(position), null, null);
+                                        helper.addFnF.setVisibility(View.INVISIBLE);
+                                        break;
+                                    case 'R':
+                                        smsManager.sendTextMessage("8363", null, "A "+fnf.get(position), null, null);
+                                        helper.addFnF.setVisibility(View.INVISIBLE);
+                                        break;
+                                    case 'B':
+                                        smsManager.sendTextMessage("3300", null, "add "+fnf.get(position), null, null);
+                                        helper.addFnF.setVisibility(View.INVISIBLE);
+                                        break;
+                                    case 'T':
+                                        smsManager.sendTextMessage("363", null,"reg", null, null);
+                                        smsManager.sendTextMessage("363", null, "add "+fnf.get(position), null, null);
+                                        helper.addFnF.setVisibility(View.INVISIBLE);
+                                        break;
+                                    default:
+                                        break;
+                                }
 //                    sending sms
 //                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + 4444));
 //                        intent.putExtra("sms_body", "P");
@@ -150,10 +156,21 @@ public class CustomAdapter extends BaseAdapter {
 //                    SmsManager smsManager = SmsManager.getDefault();
 //                    smsManager.sendTextMessage("01521208815", null, "walllaa", null, null);
 //                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    //</editor-fold>
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            //</editor-fold>
+                        }
+                    });
+
+                    dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();
                 }
             });
 

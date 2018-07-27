@@ -18,10 +18,11 @@ public class BanglalinkPackageAnalyser {
     String packageName = null;
     Helper final_helper;
 
-    Helper playHelper = new Helper("Play", "Banglalink", "P");
+    Helper playHelper = new Helper("Banglalink Play", "Banglalink", "P");
     Helper desh10Helper = new Helper("Desh 10 FnF", "Banglalink", "*999*1*112");
     Helper deshEkRateHelper = new Helper("Desh Ek Rate Darun", "Banglalink", "*999*1*111");
-    Helper helloHelper = new Helper("Hello Package", "Banglalink", "H");
+    Helper helloHelper = new Helper("Desh Hello", "Banglalink", "H");
+    Helper OneSecPulse = new Helper("1 Sec Pulse","Banglalink","*121*2*2*1*4*2");
     Helper businessHelper = new Helper("Business C&Control 4 large", "Banglalink", "");
 
     //    constructor receiving context
@@ -55,6 +56,17 @@ public class BanglalinkPackageAnalyser {
             final_helper = helloHelper;
             System.out.println(helloHelper.packageName + ": " + helloHelper.cost);
         }
+        if (min > OneSecPulse.cost) {
+            min = OneSecPulse.cost;
+            final_helper = OneSecPulse;
+            System.out.println(OneSecPulse.packageName + ": " + OneSecPulse.cost);
+        }
+
+        final_helper.packageList.add(new CostHelper(playHelper.packageName,playHelper.cost));
+        final_helper.packageList.add(new CostHelper(desh10Helper.packageName,desh10Helper.cost));
+        final_helper.packageList.add(new CostHelper(deshEkRateHelper.packageName,deshEkRateHelper.cost));
+        final_helper.packageList.add(new CostHelper(helloHelper.packageName,helloHelper.cost));
+        final_helper.packageList.add(new CostHelper(OneSecPulse.packageName,OneSecPulse.cost));
 
         return final_helper;
     }
@@ -63,9 +75,11 @@ public class BanglalinkPackageAnalyser {
         playHelper.fnf.clear();
         int otherfnf = 0;
         c = db.oneSecondPulse();
+
         if (c.getCount() > 0) {
             c.moveToFirst();
             do {
+
 //                play pack
                 if (c.getString(0).charAt(2) == '9' && playHelper.sfnf) {
                     playHelper.cost += Double.valueOf(c.getString(1)) * 0.55 / 100;
@@ -82,6 +96,9 @@ public class BanglalinkPackageAnalyser {
 
                 }
 
+//                One second pulse
+                OneSecPulse.cost += Double.valueOf(c.getString(1)) * 2.2 / 100;
+
             } while (c.moveToNext());
         }
         db.close();
@@ -92,6 +109,7 @@ public class BanglalinkPackageAnalyser {
         if (c.getCount() > 0) {
             c.moveToFirst();
             do {
+
 //                play pack
                 if (playHelper.superFnf.equals(c.getString(0))) {
 

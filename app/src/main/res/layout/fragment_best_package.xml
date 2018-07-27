@@ -7,66 +7,212 @@
     android:orientation="vertical"
     tools:context=".BestPackage">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Circle -->
-        <TextView
-            android:id="@+id/package_name"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/circle_shape"
-            android:gravity="center"
-            android:text="Package Name"
-            android:textAlignment="center"
-            android:textColor="@color/cardview_light_background"
-            android:textSize="25sp" />
-
-        <!-- Activate -->
-        <Button
-            android:id="@+id/activate"
-            android:layout_width="wrap_content"
+        <!-- best package -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/rectangle_button"
-            android:paddingHorizontal="20dp"
-            android:text="+ Activate"
-            android:textAllCaps="false"
-            android:textSize="25sp" />
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lightGray"
+                    android:gravity="center_horizontal"
+                    android:text="Suggested Package"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="25sp" />
+
+                <!-- Circle -->
+                <TextView
+                    android:id="@+id/package_name"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_shape"
+                    android:gravity="center"
+                    android:text="Package Name"
+                    android:textAlignment="center"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="25sp" />
+
+                <!-- Activate -->
+                <Button
+                    android:id="@+id/activate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rectangle_button"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:text="+ Activate"
+                    android:textAllCaps="false"
+                    android:textSize="25sp" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
         <!-- Package Details -->
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:text="Package Details: "
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/fnfDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
-            android:text="Super FnF: 1\nGeneral FnF: 18\nCurrent Package: Shobai Ek 1"
-            android:textSize="20sp" />
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
 
-        <TextView
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lightGray"
+                    android:gravity="center_horizontal"
+                    android:text="Suggested Package Details"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/bestPackageDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Super FnF: 1\nGeneral FnF: 18\nCall Rate: 1p/s"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- current package -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:text="You could save xxx taka"
-            android:textSize="20sp" />
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lightGray"
+                    android:gravity="center_horizontal"
+                    android:text="Current Package Details"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/currentPackageDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="put the full message here"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- Estimated Cost -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:id="@+id/costLayuot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lightGray"
+                    android:gravity="center_horizontal"
+                    android:text="Other Package Cost"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="25sp" />
+
+                <ListView
+                    android:id="@+id/costList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"></ListView>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- savings -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <TextView
+                android:id="@+id/save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginVertical="10dp"
+                android:text="You could save xxx taka"
+                android:textAlignment="center"
+                android:textColor="@color/secondaryColor"
+                android:textSize="20sp" />
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 </ScrollView>

@@ -44,6 +44,9 @@ public class Database extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("select number,sum(duration),callTime from call_history group by number order by sum(duration) DESC", null);
         return c;
     }
+    public Cursor rawData(){
+        return this.getReadableDatabase().rawQuery("select number,duration,callTime from call_history",null);
+    }
     public void deleteTable()
     {
         SQLiteDatabase db=this.getWritableDatabase();
