@@ -1,4 +1,4 @@
-                                            <h1>Package and FnF Suggestion Generator</h1>
+                                            Package and FnF Suggestion Generator
 
 Based on the Mobile Operators and their Packages in Bangladesh this application is developed to help people 
 1. Choosing the best package
